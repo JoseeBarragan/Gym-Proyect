@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Clase {
+  idClase         String   @id @db.Uuid
+  idInstructor    String   @db.Uuid
+  nombre          String   @unique(map: "nombreClaseUC") @db.VarChar(70)
+  descripcion     String   @db.VarChar(255)
+  dia             String   @db.VarChar(15)
+  horario         String   @db.VarChar(10)
+  duracionMinutos Int
+  cupo            Int
+  Usuario         Usuario  @relation(fields: [idInstructor], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "idInstructorFK")
+  Reserva         Reserva[]
+}
+
+model Membresia {
+  idMembresia      String          @id @unique(map: "idMembresia") @db.Uuid
+  idSocio          String          @db.Uuid
+  fechaInico       DateTime        @db.Date
+  fechaVencimiento DateTime        @db.Date
+  estadoMembresia  EstadoMembresia
+  idTipoMembresia  String          @db.Uuid
+  Usuario          Usuario         @relation(fields: [idSocio], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "idSocioFK")
+  TipoMembresia    TipoMembresia   @relation(fields: [idTipoMembresia], references: [idTipoMembresia], onDelete: NoAction, onUpdate: NoAction, map: "idTMFK")
+  Pago             Pago?
+}
+
+model Pago {
+  idPago          String     @id @db.Uuid
+  monto           Int
+  fechaPago       DateTime   @db.Date
+  stripePaymentId String     @unique(map: "stripeUC") @db.VarChar(255)
+  estadoPago      EstadoPago
+  idMembresia     String     @unique(map: "idMembresiaUC") @db.Uuid
+  Membresia       Membresia  @relation(fields: [idMembresia], references: [idMembresia], onDelete: NoAction, onUpdate: NoAction, map: "idMembreciaFK")
+}
+
+model Reserva {
+  idReserva     String        @id @db.Uuid
+  idClase       String        @db.Uuid
+  idSocio       String        @db.Uuid
+  fechaReserva  DateTime      @db.Date
+  estadoReserva EstadoReserva
+  asistencia    Boolean?
+  Clase         Clase         @relation(fields: [idClase], references: [idClase], onDelete: NoAction, onUpdate: NoAction, map: "idClaseFK")
+  Usuario       Usuario       @relation(fields: [idSocio], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "idSocioFK")
+
+  @@unique([idSocio, idClase])
+}
+
+model TipoMembresia {
+  idTipoMembresia String      @id @db.Uuid
+  nombre          String      @unique(map: "nombreUC") @db.VarChar(100)
+  duracionDias    Int
+  precio          Int
+  Membresia       Membresia[]
+}
+
+model Usuario {
+  idUsuario   String      @id @db.Uuid
+  email       String      @unique(map: "emailUC") @db.VarChar(50)
+  contrasena  String      @db.VarChar(30)
+  nombre      String      @db.VarChar(20)
+  apellido    String      @db.VarChar(20)
+  telefono    String      @db.VarChar(20)
+  tipoUsuario TipoUsuario
+  Clase       Clase[]
+  Membresia   Membresia[]
+  Reserva     Reserva[]
+}
+
+enum EstadoMembresia {
+  Activa
+  Cancelada
+  Expirada
+}
+
+enum EstadoPago {
+  Pendiente
+  Completado
+  Fallido
+}
+
+enum EstadoReserva {
+  Pendiente
+  Confirmada
+  Cancelada
+}
+
+enum TipoUsuario {
+  Administrador
+  Instructor
+  Socio
+}
