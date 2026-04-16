@@ -4,7 +4,7 @@ import * as bcrypt from "bcrypt"
 @Injectable()
 export class PasswordService {
     async hash(password: string): Promise<string>{
-        return await bcrypt.hash(password, process.env.SALT_ROUNDS || 10)
+        return await bcrypt.hash(password, Number(process.env.SALT_ROUNDS) || 10)
     }
     async compare(password: string, hash: string): Promise<boolean> {
         return await bcrypt.compare(password, hash)

@@ -1,6 +1,5 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -65,9 +64,9 @@ model TipoMembresia {
 }
 
 model Usuario {
-  idUsuario   String      @id @db.Uuid
+  idUsuario   String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email       String      @unique(map: "emailUC") @db.VarChar(50)
-  contrasena  String      @db.VarChar(30)
+  contrasena  String      @db.VarChar(100)
   nombre      String      @db.VarChar(20)
   apellido    String      @db.VarChar(20)
   telefono    String      @db.VarChar(20)

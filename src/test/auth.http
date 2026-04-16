@@ -2,6 +2,18 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "tu@putamadre.com",
+    "email": "admin@gym.com",
     "contrasena": "tu reputa madre"
+}
+###
+POST http://localhost:3000/auth/signup
+Content-Type: application/json
+
+{
+    "email": "josebpp198@gmail.com",
+    "contrasena": "123456",
+    "nombre": "Jose",
+    "apellido": "Barragan",
+    "telefono": "12345678",
+    "tipoUsuario": "Socio"
 }

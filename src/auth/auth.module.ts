@@ -3,16 +3,25 @@ import { LogInService } from './services/login.service';
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './repository/AuthRepository';
 import { PasswordService } from './services/Password.service';
+import { UsersRepository } from '../users/repository/UsersRepository';
+import { PrismaService } from '../prisma.service';
+import { SignUpService } from './services/signUp.service';
 
 @Module({
   controllers: [AuthController],
   providers: [
     LogInService,
+    SignUpService,
     {
       provide: "AuthRepository",
       useClass: AuthRepository
     },
-    PasswordService
+    PasswordService,
+    {
+      provide: "UserRepository",
+      useClass: UsersRepository
+    },
+    PrismaService
   ],
 })
 export class AuthModule {}
