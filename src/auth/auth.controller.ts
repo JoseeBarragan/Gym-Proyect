@@ -20,4 +20,5 @@ export class AuthController {
   signUp(@Body() user: CreateUserDto){
     return this.signUpService.execute(user)
   }
+
 }

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { ConflictException, Inject, Injectable } from "@nestjs/common";
 import { CreateUserDto } from "../../users/dto/user.dto";
 import type { IUsersRepository } from "../../users/repository/InterfaceRepository";
 import { PasswordService } from "./Password.service";
@@ -13,7 +13,9 @@ export class SignUpService {
 
     async execute(user: CreateUserDto) {
         const usuario = await this.userRepository.getByEmail(user.email); 
-        if (usuario) throw new Error("El usuario ya existe")
+        if (usuario) {
+            throw new ConflictException('El usuario ya existe');
+        }
 
         const hashedPassword = await this.passwordService.hash(user.contrasena)
         

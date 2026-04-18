@@ -1,8 +1,8 @@
 import { PrismaService } from "../../prisma.service";
-import type { Usuario } from "../../../node_modules/.prisma/client";
+import type { Usuario } from "@prisma/client";
 import { LogInDto } from "../dto/login.dto";
 import { IAuthRepository } from "./Interface";
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, ServiceUnavailableException } from "@nestjs/common";
 
 @Injectable()
 export class AuthRepository implements IAuthRepository {
@@ -16,7 +16,7 @@ export class AuthRepository implements IAuthRepository {
                 where: {email: user.email}
             });
         } catch(err) {
-            throw new Error(`${err}`)
+            throw new ServiceUnavailableException(`${err}`)
         }
     }
 }
