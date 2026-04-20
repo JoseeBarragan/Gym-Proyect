@@ -1,8 +1,8 @@
 import { PrismaService } from "../../prisma.service";
 import { IUsersRepository } from "./InterfaceRepository";
 import { Usuario } from "@prisma/client";
-import { CreateUserDto } from "../dto/user.dto";
-import { Inject, Injectable } from "@nestjs/common";
+import { CreateUserDto, UpdateUserDto } from "../dto/user.dto";
+import { Inject, Injectable, ServiceUnavailableException } from "@nestjs/common";
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
@@ -16,7 +16,7 @@ export class UsersRepository implements IUsersRepository {
             
             return users;
         } catch (err) {
-            throw new Error(`${err}`)
+            throw new ServiceUnavailableException(`${err}`)
         }
     }
 
@@ -26,7 +26,7 @@ export class UsersRepository implements IUsersRepository {
                 where: {email: email}
             });
         } catch (err) {
-            throw new Error(`${err}`)
+            throw new ServiceUnavailableException(`${err}`)
         }
     }
 
@@ -43,8 +43,44 @@ export class UsersRepository implements IUsersRepository {
                 }
              });
         } catch (err) {
-            throw new Error(`${err}`)
+            throw new ServiceUnavailableException(`${err}`)
         }
     }
 
+    async getProfile(id: string): Promise<Usuario | null> {
+        try {
+            return await this.prisma.usuario.findUnique({
+                where: {idUsuario: id}
+            });
+        } catch (err) {
+            throw new ServiceUnavailableException(`${err}`)
+        }
+    }
+
+    async updateUser(id: string, user: UpdateUserDto): Promise<Usuario> {
+        try {
+            return await this.prisma.usuario.update({
+                where: {idUsuario: id},
+                data: {
+                    email: user.email,
+                    contrasena: user.contrasena,
+                    nombre: user.nombre,
+                    apellido: user.apellido,
+                    telefono: user.telefono
+                }
+            });
+        } catch (err) {
+            throw new ServiceUnavailableException(`${err}`)
+        }
+    }
+
+    async deteleUser(id: string): Promise<void> {
+        try {
+            await this.prisma.usuario.delete({
+                where: {idUsuario: id}
+            });
+        } catch (err) {
+            throw new ServiceUnavailableException(`${err}`)
+        }
+    }
 }

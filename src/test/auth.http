@@ -2,8 +2,8 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "josebpp198@gmail.com",
-    "contrasena": "123456"
+    "email": "barraganseba@gmail.com",
+    "contrasena": "12345678"
 }
 ###
 POST http://localhost:3000/auth/signup
@@ -17,3 +17,17 @@ Content-Type: application/json
     "telefono": "12345678",
     "tipoUsuario": "Socio"
 }
+
+###
+PATCH  http://localhost:3000/users/profile/896a3c5f-20d9-461c-9224-8a669aae7326
+Content-Type: application/json
+
+{
+    "contrasena": "12345678" 
+}
+
+###
+GET http://localhost:3000/users/profile/896a3c5f-20d9-461c-9224-8a669aae7326
+
+###
+GET http://localhost:3000/users

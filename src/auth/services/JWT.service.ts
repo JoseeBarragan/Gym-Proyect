@@ -13,6 +13,7 @@ export class JWTService {
         try {
             return jwt.verify(token, process.env.JWT_SECRET_KEY || "default") as Usuario;
         } catch (err) {
+            console.log(err)
             return null;
         }
     }

@@ -21,7 +21,7 @@ model Clase {
 }
 
 model Membresia {
-  idMembresia      String          @id @unique(map: "idMembresia") @db.Uuid
+  idMembresia      String          @id @default(dbgenerated("gen_random_uuid()")) @unique(map: "idMembresia") @db.Uuid
   idSocio          String          @db.Uuid
   fechaInico       DateTime        @db.Date
   fechaVencimiento DateTime        @db.Date
