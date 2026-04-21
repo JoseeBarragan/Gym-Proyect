@@ -3,6 +3,7 @@ import { MembershipController } from './membership.controller';
 import { AsignMembershipService } from './services/AsignMembership.service';
 import { MembershipRepository } from './repository/MembershipRepository';
 import { TypeMembershipRepository } from '../typeMembership/Repository/TypeMemRepository';
+import { PrismaService } from '../prisma.service';
 
 @Module({
   controllers: [MembershipController],
@@ -15,7 +16,8 @@ import { TypeMembershipRepository } from '../typeMembership/Repository/TypeMemRe
     {
       provide: "TypeMembershipRepository",
       useClass: TypeMembershipRepository
-    }
+    },
+    PrismaService
   ],
 })
 export class MembershipModule {}
