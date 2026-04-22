@@ -8,18 +8,21 @@ export class PaymentRepository implements IPaymentRepository {
         private readonly prisma: PrismaService 
     ){}
 
-    async payMembership(idSocio: string, idTypeMembership: string): Promise<void> {
+    async registerPayment(idStripe: string, idMembership: string, monto: number): Promise<void> {
         try{
-            await Promise.resolve()
-            /* await this.prisma.pago.create({
+            await this.prisma.pago.create({
                 data: {
-                    
+                    stripePaymentId: idStripe,
+                    idMembresia: idMembership,
+                    monto: monto,
+                    fechaPago: new Date(),
+                    estadoPago: "Completado"
                 }
-            }) */
+            })
             return 
         }catch(err){
             console.log(err)
             throw new ServiceUnavailableException("Error al procesar el pago")
         }
     }
-}
+} 

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { IMembershipRepository } from '../repository/IMemRepository';
 import type { ITypeMembershipRepository } from '../../typeMembership/Repository/ITypeMemRepository';
+import { Membresia } from '@prisma/client';
 
 @Injectable()
 export class AsignMembershipService {
@@ -9,7 +10,7 @@ export class AsignMembershipService {
         @Inject("TypeMembershipRepository") private readonly typeMembershipRepository: ITypeMembershipRepository
     ) {}
 
-    async execute (idSocio: string, idTypeMembership: string): Promise<void> {
+    async execute (idSocio: string, idTypeMembership: string): Promise<Membresia> {
         const [activeMembership, typeMembership] = await Promise.all([
             this.membershipRepository.getActiveMembership(idSocio),
             this.typeMembershipRepository.getTypeMembershipById(idTypeMembership)

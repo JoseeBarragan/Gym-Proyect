@@ -1,17 +1,35 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { PayMembershipService } from './services/payMembership.service';
+import { Body, Controller, Get, Headers, Post, RawBody } from '@nestjs/common';
+import { CreatePaymentService } from './services/createPayment.service';
 import { Public } from '../shared/decorators/PublicDecorator';
+import { HandleWebHookService } from './services/handleWebHook.service';
 
 @Controller('payment')
 export class PaymentController {
   constructor(
-    private readonly payMembershipService: PayMembershipService
+    private readonly createPaymentService: CreatePaymentService,
+    private readonly handleWebhookService: HandleWebHookService
   ) {}
 
-  @Public()
-  @Post("payMembership")
-  async payMembership(@Body() body: { idSocio: string, idTipoMembresia: string }) {
-    return await this.payMembershipService.execute(body.idSocio, body.idTipoMembresia);
+  @Post("createPayment")
+  async createPayment(@Body() body: { idSocio: string, idTipoMembresia: string }) {
+    return await this.createPaymentService.execute(body.idSocio, body.idTipoMembresia);
   }
 
+  @Public()
+  @Get("success")
+  success() {
+    return { message: "Pago exitoso" };
+  }
+
+  @Public()
+  @Get("cancel")
+  cancel() {
+    return { message: "Pago cancelado" };
+  }
+
+  @Public()
+  @Post("webhook")
+  async webhook( @RawBody() rawBody: Buffer, @Headers("stripe-signature") sig: string ) {
+      return await this.handleWebhookService.execute(rawBody, sig);
+  }
 }

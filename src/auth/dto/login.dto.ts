@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MaxLength } from "class-validator"
+import { IsEmail, IsNotEmpty, IsString } from "class-validator"
 
 export class LogInDto {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -9,6 +9,5 @@ export class LogInDto {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     @IsNotEmpty()
     @IsString()
-    @MaxLength(15)
     contrasena!: string;
 }

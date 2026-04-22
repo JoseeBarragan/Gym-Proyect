@@ -3,7 +3,7 @@ import { StripeService } from '../../stripe.service';
 import type { ITypeMembershipRepository } from '../../typeMembership/Repository/ITypeMemRepository';
 
 @Injectable()
-export class PayMembershipService {
+export class CreatePaymentService {
     constructor(
         @Inject("TypeMembershipRepository") private readonly typeMembershipRepository: ITypeMembershipRepository,
         private readonly stripeService: StripeService
@@ -26,14 +26,14 @@ export class PayMembershipService {
                         currency: "ars",
                         unit_amount: typeMembership.precio * 100, // Stripe maneja centavos
                         product_data: {
-                            name: typeMembership.nombre,
+                            name: "Plan " + typeMembership.nombre,
                         },
                     },
                     quantity: 1,
                 },
             ],
-            success_url: "http://localhost:3000/payments/success",
-            cancel_url: "http://localhost:3000/payments/cancel",
+            success_url: "http://localhost:3000/payment/success",
+            cancel_url: "http://localhost:3000/payment/cancel",
             metadata: {
                 idSocio,
                 idTypeMembership,

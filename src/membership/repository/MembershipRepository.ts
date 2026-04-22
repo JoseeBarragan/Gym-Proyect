@@ -10,9 +10,9 @@ export class MembershipRepository implements IMembershipRepository {
         private readonly prisma: PrismaService
     ){}
 
-    async asignMembership(idSocio: string, idTypeMembership: string, membershipData: CreateMemberShipDto): Promise<void> {
+    async asignMembership(idSocio: string, idTypeMembership: string, membershipData: CreateMemberShipDto): Promise<Membresia> {
         try {
-            await this.prisma.membresia.create({
+            return await this.prisma.membresia.create({
                 data: {
                     idSocio: idSocio,
                     idTipoMembresia: idTypeMembership,
@@ -21,7 +21,6 @@ export class MembershipRepository implements IMembershipRepository {
                     estadoMembresia: "Activa"
                 }
             })
-            return
         } catch (error) {
             console.log(error)
             throw new ServiceUnavailableException("Error while asigning membership");

@@ -1,15 +1,19 @@
 import { Module } from '@nestjs/common';
-import { PayMembershipService } from './services/payMembership.service';
+import { CreatePaymentService } from './services/createPayment.service';
 import { PaymentController } from './payment.controller';
 import { PaymentRepository } from './repository/PaymentRepository';
 import { PrismaService } from '../prisma.service';
 import { TypeMembershipRepository } from '../typeMembership/Repository/TypeMemRepository';
 import { StripeService } from '../stripe.service';
+import { AsignMembershipService } from '../membership/services/AsignMembership.service';
+import { RegisterPaymentService } from './services/RegisterPayment.service';
+import { MembershipRepository } from '../membership/repository/MembershipRepository';
+import { HandleWebHookService } from './services/handleWebHook.service';
 
 @Module({
   controllers: [PaymentController],
   providers: [
-    PayMembershipService,
+    CreatePaymentService,
     {
       provide: "IPaymentRepository",
       useClass: PaymentRepository
@@ -18,8 +22,15 @@ import { StripeService } from '../stripe.service';
       provide: "TypeMembershipRepository",
       useClass: TypeMembershipRepository
     },
+    {
+      provide: "MembershipRepository",
+      useClass: MembershipRepository
+    },
     PrismaService,
-    StripeService
+    StripeService,
+    AsignMembershipService,
+    RegisterPaymentService,
+    HandleWebHookService
   ],
 })
 export class PaymentModule {}

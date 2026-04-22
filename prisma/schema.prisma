@@ -33,7 +33,7 @@ model Membresia {
 }
 
 model Pago {
-  idPago          String     @id @db.Uuid
+  idPago          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   monto           Int
   fechaPago       DateTime   @db.Date
   stripePaymentId String     @unique(map: "stripeUC") @db.VarChar(255)

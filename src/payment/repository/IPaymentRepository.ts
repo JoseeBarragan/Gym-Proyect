@@ -1,3 +1,3 @@
 export interface IPaymentRepository {
-  payMembership(idSocio: string, idTypeMembership: string): Promise<void>;
+  registerPayment(idStripe: string, idMembership: string, monto: number): Promise<void>;
 }
