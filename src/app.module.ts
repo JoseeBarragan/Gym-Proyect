@@ -7,9 +7,10 @@ import { AuthGuard } from './shared/guards/AuthGuard.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './shared/guards/RoleGuard.guard';
 import { JWTService } from './auth/services/JWT.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [AuthModule, UsersModule, MembershipModule, PaymentModule],
+  imports: [AuthModule, UsersModule, MembershipModule, PaymentModule, ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' })],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },

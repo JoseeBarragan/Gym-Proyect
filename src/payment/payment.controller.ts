@@ -1,13 +1,17 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { PaymentService } from './services/payment.service';
+import { PayMembershipService } from './services/payMembership.service';
+import { Public } from '../shared/decorators/PublicDecorator';
 
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(
+    private readonly payMembershipService: PayMembershipService
+  ) {}
 
-
+  @Public()
   @Post("payMembership")
-  async payMembership(@Body() body: { idSocio: string, idTypeMembership: string }) {
-    // return await this.paymentService.payMembership(body.idSocio, body.idTypeMembership);
+  async payMembership(@Body() body: { idSocio: string, idTipoMembresia: string }) {
+    return await this.payMembershipService.execute(body.idSocio, body.idTipoMembresia);
   }
+
 }

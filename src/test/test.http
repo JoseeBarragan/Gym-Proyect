@@ -1,0 +1,47 @@
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "barraganseba@gmail.com",
+    "contrasena": "12345678"
+}
+###
+POST http://localhost:3000/auth/signup
+Content-Type: application/json
+
+{
+    "email": "josebpp198@gmail.com",
+    "contrasena": "123456",
+    "nombre": "Jose",
+    "apellido": "Barragan",
+    "telefono": "12345678",
+    "tipoUsuario": "Socio"
+}
+
+###
+PATCH  http://localhost:3000/users/profile/896a3c5f-20d9-461c-9224-8a669aae7326
+Content-Type: application/json
+
+{
+    "contrasena": "12345678" 
+}
+
+###
+GET http://localhost:3000/users/profile/896a3c5f-20d9-461c-9224-8a669aae7326
+
+###
+GET http://localhost:3000/users
+
+###
+POST http://localhost:3000/membership/test
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJhcnJhZ2Fuc2ViYUBnbWFpbC5jb20iLCJub21icmUiOiJKb3NlIiwiYXBlbGxpZG8iOiJCYXJyYWdhbiIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsImlhdCI6MTc3NjgxMjkwNSwiZXhwIjoxNzc2ODE2NTA1fQ.LdRoRcazDH9ptbwISfMyllqsyy7st9eNryTieGDDPtI
+
+###
+POST http://localhost:3000/payment/payMembership
+Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJhcnJhZ2Fuc2ViYUBnbWFpbC5jb20iLCJub21icmUiOiJKb3NlIiwiYXBlbGxpZG8iOiJCYXJyYWdhbiIsInRpcG9Vc3VhcmlvIjoiU29jaW8iLCJpYXQiOjE3NzY4ODk4NjcsImV4cCI6MTc3Njg5MzQ2N30.phQ7gJ_9C2mZzdMXc6Gombb-NtruxTQ9LkEXqTf6WI4"
+Content-Type: application/json
+
+{
+    "idSocio": "896a3c5f-20d9-461c-9224-8a669aae7326",
+    "idTipoMembresia": "b0eebc99-9c0b-4ef8-bb6d-6bb9bd380b11"
+}
