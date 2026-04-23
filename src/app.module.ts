@@ -8,9 +8,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './shared/guards/RoleGuard.guard';
 import { JWTService } from './auth/services/JWT.service';
 import { ConfigModule } from '@nestjs/config';
+import { ClaseModule } from './clase/clase.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, MembershipModule, PaymentModule, ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' })],
+  imports: [AuthModule, UsersModule, MembershipModule, PaymentModule, ClaseModule, ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' })],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },

@@ -7,6 +7,7 @@ import { GetAllUsersService } from './services/getAllUsers.service';
 import { UpdateUserService } from './services/updateUser.service';
 import { PasswordService } from '../auth/services/Password.service';
 import { DeleteUserService } from './services/deleteUser.service';
+import { CreateInstructorService } from './services/createInstructor.service';
 
 @Module({
   controllers: [UsersController],
@@ -20,7 +21,8 @@ import { DeleteUserService } from './services/deleteUser.service';
     GetAllUsersService,
     UpdateUserService,
     PasswordService,
-    DeleteUserService
+    DeleteUserService,
+    CreateInstructorService
   ]
 })
 export class UsersModule {}

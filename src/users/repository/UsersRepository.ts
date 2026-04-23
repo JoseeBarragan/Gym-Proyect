@@ -1,7 +1,7 @@
 import { PrismaService } from "../../prisma.service";
 import { IUsersRepository } from "./InterfaceRepository";
 import { Usuario } from "@prisma/client";
-import { CreateUserDto, UpdateUserDto } from "../dto/user.dto";
+import { CreateUserDto, TipoUsuario, UpdateUserDto } from "../dto/user.dto";
 import { Inject, Injectable, ServiceUnavailableException } from "@nestjs/common";
 
 @Injectable()
@@ -10,11 +10,25 @@ export class UsersRepository implements IUsersRepository {
         @Inject(PrismaService) private readonly prisma: PrismaService
     ){}
 
-    async getAll(): Promise<Usuario[]> {
+    async getAll(tipoUsuario?: TipoUsuario): Promise<Usuario[]> {
         try {
-            const users = await this.prisma.usuario.findMany();
+            const argument = tipoUsuario ? {
+                where: {tipoUsuario: tipoUsuario}
+            } : undefined;
+
+            const users = await this.prisma.usuario.findMany(argument);
             
             return users;
+        } catch (err) {
+            throw new ServiceUnavailableException(`${err}`)
+        }
+    }
+
+    async getById(id: string): Promise<Usuario | null> {
+        try {
+            return await this.prisma.usuario.findUnique({
+                where: {idUsuario: id}
+            });
         } catch (err) {
             throw new ServiceUnavailableException(`${err}`)
         }
@@ -74,7 +88,7 @@ export class UsersRepository implements IUsersRepository {
         }
     }
 
-    async deteleUser(id: string): Promise<void> {
+    async deleteUser(id: string): Promise<void> {
         try {
             await this.prisma.usuario.delete({
                 where: {idUsuario: id}

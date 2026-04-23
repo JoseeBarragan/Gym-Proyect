@@ -30,7 +30,8 @@ Content-Type: application/json
 GET http://localhost:3000/users/profile/896a3c5f-20d9-461c-9224-8a669aae7326
 
 ###
-GET http://localhost:3000/users
+GET http://localhost:3000/users?tipoUsuario=Socio
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJhcnJhZ2Fuc2ViYUBnbWFpbC5jb20iLCJub21icmUiOiJKb3NlIiwiYXBlbGxpZG8iOiJCYXJyYWdhbiIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsImlhdCI6MTc3Njk3NDM3NCwiZXhwIjoxNzc2OTc3OTc0fQ.DLY6VMYJNaXbio9sT99ohQ_HTKfm1YTlA-5NjZ1TRzg
 
 ###
 POST http://localhost:3000/membership/test
