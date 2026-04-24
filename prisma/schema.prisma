@@ -49,11 +49,10 @@ model Reserva {
   idSocio       String        @db.Uuid
   fechaReserva  DateTime      @db.Date
   estadoReserva EstadoReserva
-  asistencia    Boolean?
   Clase         Clase         @relation(fields: [idClase], references: [idClase], onDelete: NoAction, onUpdate: NoAction, map: "idClaseFK")
   Usuario       Usuario       @relation(fields: [idSocio], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "idSocioFK")
 
-  @@unique([idSocio, idClase])
+  @@unique([idSocio, idClase, fechaReserva])
 }
 
 model TipoMembresia {
@@ -90,8 +89,7 @@ enum EstadoPago {
 }
 
 enum EstadoReserva {
-  Pendiente
-  Confirmada
+  Reservada
   Cancelada
 }
 

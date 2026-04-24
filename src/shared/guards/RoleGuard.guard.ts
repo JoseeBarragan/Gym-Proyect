@@ -14,10 +14,12 @@ export class RolesGuard implements CanActivate {
             context.getClass(),
         ]);
 
-        if (!roles) return true; // si no tiene @Roles, cualquiera puede acceder
+        if (!roles) return true;
 
         const request = context.switchToHttp().getRequest<AuthRequest>();
         const user = request.user;
+
+        // here you should check the users role data with the database but for simplicity we will just check the role from the token
 
         if (!roles.includes(user?.tipoUsuario)) {
             throw new ForbiddenException("No tenés permisos para realizar esta acción");
