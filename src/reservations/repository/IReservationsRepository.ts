@@ -6,4 +6,5 @@ export interface IReservationsRepository {
     delete(id: string): Promise<void>;
     getReservationsBySocio(idSocio: string): Promise<Reserva[]>;
     getClaseReservations(idClase: string): Promise<Reserva[]>;
+    getReservationForAClase(idClase: string, fechaReserva: Date): Promise<number>;
 }

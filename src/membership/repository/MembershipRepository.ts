@@ -29,16 +29,28 @@ export class MembershipRepository implements IMembershipRepository {
 
     async getActiveMembership(id: string): Promise<Membresia | null>{
         try {
-            const activeMembership = await this.prisma.membresia.findFirst({
+            const today = new Date();
+
+            await this.prisma.membresia.updateMany({
+                where: {
+                    idSocio: id,
+                    fechaVencimiento: { lt: today },
+                    estadoMembresia: "Activa"
+                },
+                data: { estadoMembresia: "Expirada" }
+            });
+
+            return await this.prisma.membresia.findFirst({
                 where: {
                     idSocio: id,
                     estadoMembresia: "Activa"
                 }
-            })
-            return activeMembership
+            });
         } catch (error) {
             console.log(error)
             throw new ServiceUnavailableException("Error while fetching active membership");
         }
     }
+
+    async 
 }

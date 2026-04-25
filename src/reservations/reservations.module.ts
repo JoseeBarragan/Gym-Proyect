@@ -18,6 +18,10 @@ import { GetClaseReservationsService } from './services/getClaseReservations.ser
       provide: "ReservationsRepository",
       useClass: ReservationRepository
     },
+    {
+      provide: "MembershipRepository",
+      useClass: ReservationRepository
+    },
     PrismaService
   ],
 })

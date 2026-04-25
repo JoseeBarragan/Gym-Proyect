@@ -56,4 +56,14 @@ export class ReservationRepository implements IReservationsRepository {
             throw new ServiceUnavailableException('Error al obtener las reservas: ' + err);
         }
     }
+
+    async getReservationForAClase(idClase: string, fechaReserva: Date): Promise<number> {
+        try {
+            return await this.prisma.reserva.count({
+                where: { idClase, fechaReserva, estadoReserva: "Reservada" }
+            })
+        } catch (err) {
+            throw new ServiceUnavailableException('Error al obtener las reservas: ' + err);
+        }
+    }
 }
