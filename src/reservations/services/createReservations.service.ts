@@ -9,7 +9,7 @@ export class CreateReservationsService {
     constructor(
         @Inject("ReservationsRepository") private readonly reservationsRepository: IReservationsRepository,
         @Inject("MembershipRepository") private readonly membershipRepository: IMembershipRepository,
-        @Inject("ClaseRepository") private readonly claseRepository: IClasesRepository
+        @Inject("ClasesRepository") private readonly claseRepository: IClasesRepository
     ) {}
 
     async execute(reservationData: CreateResDto) {

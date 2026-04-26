@@ -1,39 +1,82 @@
 # Business Rules
 
-## Usuario
-- El email debe ser único en el sistema
-- Un usuario inactivo no puede iniciar sesión
-- Solo el administrador puede crear instructores
+## Alcance
+Este documento refleja el estado actual del codigo en `src/` y `prisma/schema.prisma`.
+Incluye reglas implementadas, parciales y pendientes.
 
-## Membresía
-- Un socio solo puede tener una membresía con estado ACTIVE a la vez
-- La fechaVencimiento = fechaInicio + duracionDias del TipoMembresia
-- Una membresía solo se activa si el pago asociado tiene estado COMPLETED
-- Si la fechaVencimiento es anterior a la fecha actual, el estado pasa a EXPIRED
-- No se puede cancelar una membresía con pagos pendientes
+## Reglas globales
+- Toda ruta requiere JWT salvo endpoints con decorador `Public`.
+- Los roles se validan con `RolesGuard` y comparan `tipoUsuario` del JWT.
+- Validaciones de DTO se aplican globalmente con `ValidationPipe` (`whitelist: true`, `transform: true`).
+
+## Usuario
+### Implementadas
+- El email es unico en base de datos (`Usuario.email` con unique).
+- `signup` falla si el email ya existe.
+- Solo `Administrador` puede crear instructores (`POST /users/instructor`).
+- En login se validan credenciales (email + contrasena).
+- La contrasena se hashea al registrarse y al actualizarse.
+
+### Pendientes o no implementadas
+- No existe campo de usuario inactivo/activo, por lo tanto no se puede aplicar la regla "usuario inactivo no puede iniciar sesion".
+
+## Membresia
+### Implementadas
+- Al asignar membresia, `fechaVencimiento = fechaInicio + duracionDias` del tipo de membresia.
+- Si el socio ya tiene membresia `Activa`, la nueva inicia en la fecha de vencimiento de la activa (encadenamiento).
+- Si una membresia activa esta vencida (`fechaVencimiento < hoy`), se actualiza a `Expirada` antes de consultar activa.
+- La creacion de membresia por flujo de pago ocurre al webhook `checkout.session.completed` de Stripe.
+
+### Parciales
+- Regla "un socio solo puede tener una membresia activa": se controla por logica de negocio, pero no hay constraint unico en BD para forzarlo.
+
+### Pendientes o no implementadas
+- No existe flujo de cancelacion de membresia con validacion de pagos pendientes.
 
 ## TipoMembresia
-- Un TipoMembresia inactivo no puede usarse para crear nuevas membresías
-- El precio y duracionDias deben ser mayores a 0
+### Implementadas
+- Debe existir el tipo de membresia para crear una sesion de pago.
+
+### Pendientes o no implementadas
+- No existe campo `activo` en `TipoMembresia`.
+- No hay validacion explicita de `precio > 0` y `duracionDias > 0` en DTO/servicio.
 
 ## Pago
-- El stripePaymentId debe ser único
-- Un pago en estado COMPLETED no puede modificarse
-- Si el pago falla, la membresía no se crea
+### Implementadas
+- `stripePaymentId` es unico en BD.
+- El registro de pago se persiste como `Completado` luego del webhook exitoso.
+- Si falla firma de webhook o metadata, se corta el proceso.
+- Si el pago no llega a `checkout.session.completed`, no se ejecuta alta de membresia ni registro de pago en este flujo.
+
+### Parciales
+- "Un pago completado no puede modificarse" se cumple de forma indirecta porque no hay endpoint de update de pago.
 
 ## Clase
-- Una clase inactiva no acepta nuevas reservas
-- El cupoMaximo debe ser mayor a 0
-- Un instructor solo puede tener una clase por día y horario
-- Solo el administrador puede crear y modificar clases
-- Solo el instructor asignado puede marcar attended en las reservas de su clase
+### Implementadas
+- Solo `Administrador` crea, actualiza y elimina clases.
+- Solo `Administrador` e `Instructor` listan clases (`GET /`).
+- `cupo` y `duracionMinutos` deben ser >= 1 por validacion DTO.
+- `idInstructor` debe pertenecer a un usuario de tipo `Instructor` para crear clase.
+
+### Pendientes o no implementadas
+- No hay constraint para "un instructor solo puede tener una clase por dia y horario".
+- No existe campo `attended` en `Reserva`.
+- No existe regla de "solo instructor asignado marca attended" por falta de funcionalidad.
 
 ## Reserva
-- Un socio solo puede reservar si tiene membresía ACTIVE
-- Un socio no puede tener dos reservas para la misma clase
-- No se puede reservar una clase inactiva
-- El cupo no puede superarse: `reservas CONFIRMED >= cupoMaximo` bloquea nuevas reservas
-- Solo se puede cancelar una reserva si la clase no ocurrió todavía
-- `attended` solo puede ser true si el estado es CONFIRMED
-- Al cancelar una reserva, el cupo se libera
-- Un socio no puede reservar una clase si ya tiene una reserva CONFIRMED en el mismo día y horario
+### Implementadas
+- Solo `Socio` puede crear/cancelar/listar sus reservas.
+- Solo `Administrador` o `Instructor` pueden listar reservas por clase.
+- Un socio debe tener membresia activa para reservar.
+- No se permite superar cupo: si reservas activas para esa clase/fecha >= cupo, se rechaza.
+- Al "cancelar" se cambia estado a `Cancelada` (cancelacion logica).
+- Restriccion unica en BD: `@@unique([idSocio, idClase, fechaReserva])`.
+
+### Pendientes o no implementadas
+- No se valida `clase.activa` al reservar.
+- No se valida "no cancelar si la clase ya ocurrio".
+- No existe estado `CONFIRMED`; el enum actual es `Reservada | Cancelada`.
+- No se valida choque de horario para un mismo socio en clases distintas del mismo dia/horario.
+
+## Observaciones tecnicas relevantes
+- En el estado actual hay inconsistencias de inyeccion de dependencias en algunos modulos que pueden impedir ejecutar ciertos flujos en runtime hasta corregirse.

@@ -6,7 +6,8 @@ import { DeleteReservationService } from './services/deleteReservation.service';
 import { CreateReservationsService } from './services/createReservations.service';
 import { GetSocioReservationsService } from './services/getSocioReservations.service';
 import { GetClaseReservationsService } from './services/getClaseReservations.service';
-
+import { MembershipRepository } from '../membership/repository/MembershipRepository';
+import { ClaseRepository } from '../clase/repository/ClasesRepository';
 @Module({
   controllers: [ReservationsController],
   providers: [
@@ -15,12 +16,20 @@ import { GetClaseReservationsService } from './services/getClaseReservations.ser
     GetSocioReservationsService,
     GetClaseReservationsService,
     {
+      provide: "ClasesRepository",
+      useClass: ClaseRepository
+    },
+    {
       provide: "ReservationsRepository",
       useClass: ReservationRepository
     },
     {
       provide: "MembershipRepository",
-      useClass: ReservationRepository
+      useClass: MembershipRepository
+    },
+    {
+      provide: "ClasesRepository",
+      useClass: ClaseRepository
     },
     PrismaService
   ],
