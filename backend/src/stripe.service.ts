@@ -1,4 +1,3 @@
-// shared/stripe/stripe.service.ts
 import { Injectable } from "@nestjs/common";
 import Stripe from "stripe";
 
