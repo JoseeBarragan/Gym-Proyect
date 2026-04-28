@@ -27,7 +27,15 @@ export class AuthGuard implements CanActivate {
             throw new UnauthorizedException("Token no proporcionado");
         }
 
-        const token = authHeader.split(" ")[1];
+        const cookies = request.cookies as Record<string, string | undefined>;
+        const cookieToken = cookies?.access_token;
+        const headerToken = request.headers['authorization']?.replace("Bearer ", "");
+        const token = cookieToken ?? headerToken;
+
+        if (!token) {
+            throw new UnauthorizedException("Token no proporcionado");
+        }
+
         const payload = this.jwtService.verifyAccessToken(token);
 
         if (!payload) {

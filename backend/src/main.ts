@@ -2,12 +2,16 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { rawBody: true });
   
   app.useGlobalPipes(new ValidationPipe({whitelist: true, transform: true}))
   
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  app.use(cookieParser());
+
   const config = new DocumentBuilder()
     .setTitle('Gym API')
     .setDescription('Documentacion completa de endpoints por entidad del sistema de gimnasio')
