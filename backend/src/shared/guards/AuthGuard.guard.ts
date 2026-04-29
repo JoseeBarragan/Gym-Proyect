@@ -19,14 +19,6 @@ export class AuthGuard implements CanActivate {
         if (isPublic) return true 
 
         const request = context.switchToHttp().getRequest<Request>();
-        const authHeader = request.headers.authorization;
-
-        console.log(!authHeader || !authHeader.startsWith("Bearer "))
-
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            throw new UnauthorizedException("Token no proporcionado");
-        }
-
         const cookies = request.cookies as Record<string, string | undefined>;
         const cookieToken = cookies?.access_token;
         const headerToken = request.headers['authorization']?.replace("Bearer ", "");

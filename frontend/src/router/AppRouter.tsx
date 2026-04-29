@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 
 import LoginPage from '../login/pages/login';
 import AdminPage from '../admin/pages/AdminPage';
-import { RequireAdmin } from '../auth/RequireAdmin';
+import { ProtectedRoute } from '../auth/ProtectedRoute';
 
 export function AppRouter() {
   return (
@@ -12,9 +12,9 @@ export function AppRouter() {
       <Route
         path="/admin"
         element={
-          <RequireAdmin>
+          <ProtectedRoute requiredRole="Administrador">
             <AdminPage />
-          </RequireAdmin>
+          </ProtectedRoute>
         }
       />
       <Route path="*" element={<Navigate to="/login" replace />} />

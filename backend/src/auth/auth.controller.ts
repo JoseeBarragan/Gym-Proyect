@@ -1,10 +1,11 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { LogInService } from './services/login.service';
 import { LogInDto } from './dto/login.dto';
 import { CreateUserDto } from "../users/dto/user.dto";
 import { SignUpService } from './services/signUp.service';
 import type { Response } from 'express';
 import { Public } from '../shared/decorators/PublicDecorator';
+import type { AuthRequest } from '../shared/types/AuthRequest';
 import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 @ApiTags('Auth')
@@ -37,7 +38,40 @@ export class AuthController {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000
-    }).send({ ok: true });
+    }).send({ token: token });
+  }
+
+  @Public()
+  @Get('session')
+  @ApiOperation({ summary: 'Sesion actual', description: 'Devuelve el usuario autenticado en base al JWT (cookie httpOnly o Authorization).' })
+  @ApiOkResponse({
+    description: 'Sesion valida',
+    schema: {
+      example: {
+        email: 'admin@gym.com',
+        role: 'Administrador',
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({ description: 'No autenticado' })
+  session(@Req() req: AuthRequest) {
+    return {
+      user: req.user
+    };
+  }
+
+  @Post('logout')
+  @Public()
+  @ApiOperation({ summary: 'Cerrar sesion', description: 'Limpia la cookie httpOnly de access_token.' })
+  @ApiOkResponse({ description: 'Logout exitoso', schema: { example: { ok: true } } })
+  logout(@Res() res: Response) {
+    res
+      .clearCookie('access_token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      })
+      .send({ ok: true });
   }
 
   @Public()

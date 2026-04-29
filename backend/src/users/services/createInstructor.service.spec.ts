@@ -7,11 +7,14 @@ describe('CreateInstructorService', () => {
     getByEmail: jest.fn(),
     create: jest.fn(),
   };
+  const passwordService = {
+    hash: jest.fn(),
+  };
   let service: CreateInstructorService;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new CreateInstructorService(usersRepository as never);
+    service = new CreateInstructorService(usersRepository as never, passwordService as never);
   });
 
   it('should throw when email already exists', async () => {
@@ -34,11 +37,13 @@ describe('CreateInstructorService', () => {
 
     usersRepository.getByEmail.mockResolvedValue(null);
     usersRepository.create.mockResolvedValue({ idUsuario: 'u2' });
+    passwordService.hash.mockResolvedValue('hashed-123');
 
     await service.execute(dto as never);
 
     expect(usersRepository.create).toHaveBeenCalledWith({
       ...dto,
+      contrasena: 'hashed-123',
       tipoUsuario: TipoUsuario.INSTRUCTOR,
     });
   });

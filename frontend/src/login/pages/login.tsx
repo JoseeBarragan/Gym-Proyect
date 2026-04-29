@@ -6,8 +6,8 @@ import { LoginBrandPanel } from '../components/LoginBrandPanel';
 import { LoginForm } from '../components/LoginForm';
 import { LoginStatusOverlay } from '../components/LoginStatusOverlay';
 import type { AuthFormData } from '../types';
-import { useAuth } from '../../auth/AuthContext';
-import type { UserRole } from '../../auth/auth.types';
+import { useAuth } from '../../auth/auth.context';
+import { jwtDecode } from 'jwt-decode';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -30,28 +30,31 @@ export default function LoginPage() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
+    void (async () => {
+      setIsLoading(true);
 
-    const normalizedEmail = formData.email.trim().toLowerCase();
-    const role: UserRole = normalizedEmail.includes('admin') ? 'ADMIN' : 'USER';
+      try {
+        const normalizedEmail = formData.email.trim();
+        await login({ email: normalizedEmail, password: formData.password });
 
-    // Simulamos una llamada a la API compleja (ej. autenticación en base de datos)
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsSuccess(true);
+        const user = jwtDecode(localStorage.getItem("accessToken") ?? "") as Usuario;
 
-      login({ email: normalizedEmail, role });
+        setIsSuccess(true);
 
-      // Reiniciamos el estado de éxito después de mostrar la animación
-      setTimeout(() => {
+        setTimeout(() => {
+          setIsSuccess(false);
+          if (user.tipoUsuario === 'Administrador') {
+            navigate('/admin', { replace: true });
+          } else {
+            navigate('/login', { replace: true });
+          }
+        }, 800);
+      } catch {
         setIsSuccess(false);
-        if (role === 'ADMIN') {
-          navigate('/admin', { replace: true });
-        } else {
-          navigate('/login', { replace: true });
-        }
-      }, 2000);
-    }, 3000);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
   };
 
   const toggleMode = () => {

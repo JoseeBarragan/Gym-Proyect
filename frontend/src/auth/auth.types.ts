@@ -1,6 +1,5 @@
-export type UserRole = 'ADMIN' | 'USER';
+export type UserRole = 'Administrador' | 'Socio' | 'Instructor';
 
 export interface AuthUser {
-  email: string;
-  role: UserRole;
+  token: string
 }
