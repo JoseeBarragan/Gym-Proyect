@@ -7,7 +7,6 @@ import { LoginForm } from '../components/LoginForm';
 import { LoginStatusOverlay } from '../components/LoginStatusOverlay';
 import type { AuthFormData } from '../types';
 import { useAuth } from '../../auth/auth.context';
-import { jwtDecode } from 'jwt-decode';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -35,9 +34,7 @@ export default function LoginPage() {
 
       try {
         const normalizedEmail = formData.email.trim();
-        await login({ email: normalizedEmail, password: formData.password });
-
-        const user = jwtDecode(localStorage.getItem("accessToken") ?? "") as Usuario;
+        const user = await login({ email: normalizedEmail, password: formData.password });
 
         setIsSuccess(true);
 

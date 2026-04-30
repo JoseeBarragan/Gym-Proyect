@@ -12,7 +12,15 @@ export function ProtectedRoute({
 }) {
   const location = useLocation();
 
-  const userRole = (jwtDecode(localStorage.getItem("accessToken") ?? "") as Usuario).tipoUsuario
+  const token = localStorage.getItem('accessToken');
+  let userRole: UserRole | null = null;
+  try {
+    if (token) {
+      userRole = (jwtDecode<Usuario>(token).tipoUsuario as UserRole) ?? null;
+    }
+  } catch {
+    userRole = null;
+  }
 
   if (!userRole) {
     return <Navigate to="/login" replace state={{ from: location }} />;

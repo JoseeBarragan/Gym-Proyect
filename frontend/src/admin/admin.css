@@ -1,0 +1,250 @@
+/* Admin Layout */
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  background-color: #0f1115;
+  color: #e2e8f0;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.admin-sidebar {
+  width: 16rem;
+  background-color: #1a1d24;
+  border-right: 1px solid #2d323e;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #2d323e;
+}
+
+.admin-sidebar-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.admin-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  color: #94a3b8;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.admin-nav-item:hover {
+  background-color: #2d323e;
+  color: #e2e8f0;
+}
+
+.admin-nav-item.active {
+  background-color: #2563eb;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.admin-sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid #2d323e;
+}
+
+.admin-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  color: #ef4444;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.admin-logout-btn:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.admin-main {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #0f1115;
+}
+
+.admin-main-content {
+  max-w-width: 80rem;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Common Components */
+.admin-card {
+  background-color: #1a1d24;
+  border-radius: 0.75rem;
+  border: 1px solid #2d323e;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.admin-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.admin-page-subtitle {
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+.admin-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.admin-btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #2563eb;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.admin-btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+/* Dashboard Options */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.dashboard-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dashboard-stat-icon {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: white;
+}
+
+.dashboard-stat-label {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.dashboard-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Tables */
+.admin-table-container {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+}
+
+.admin-table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  padding: 1rem;
+  font-weight: 500;
+  background-color: #1a1d24;
+  border-bottom: 1px solid #2d323e;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+.admin-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #2d323e;
+}
+
+.admin-table tr:hover td {
+  background-color: #1e222a;
+}
+
+.admin-table-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.role-badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.role-admin {
+  background-color: rgba(99, 102, 241, 0.1);
+  color: #818cf8;
+}
+
+.role-user {
+  background-color: rgba(148, 163, 184, 0.1);
+  color: #cbd5e1;
+}
+
+.action-btn {
+  font-size: 0.875rem;
+  color: #60a5fa;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.action-btn:hover {
+  text-decoration: underline;
+}

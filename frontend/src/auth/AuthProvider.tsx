@@ -1,11 +1,25 @@
 import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { AuthContext } from './auth.context';
+import { jwtDecode } from 'jwt-decode';
 
 const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? 'http://localhost:3000';
+const ACCESS_TOKEN_KEY = 'accessToken';
+
+type LoginResponse = { token: string };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<Usuario | null>(null);
+  const [user, setUser] = useState<Usuario | null>(() => {
+    const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+    if (!token) return null;
+
+    try {
+      return jwtDecode<Usuario>(token);
+    } catch {
+      localStorage.removeItem(ACCESS_TOKEN_KEY);
+      return null;
+    }
+  });
 
   const value = useMemo(() => {
     return {
@@ -23,9 +37,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error('Credenciales inválidas');
         }
 
-        localStorage.setItem("accessToken", JSON.stringify(await res.json()));
+        const data = (await res.json()) as LoginResponse;
+        localStorage.setItem(ACCESS_TOKEN_KEY, data.token);
 
-        return ;
+        const decoded = jwtDecode<Usuario>(data.token);
+        setUser(decoded);
+        return decoded;
       },
       logout: async () => {
         try {
@@ -33,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             method: 'POST',
             credentials: 'include',
           });
-          localStorage.removeItem("accessToken");
+          localStorage.removeItem(ACCESS_TOKEN_KEY);
 
         } finally {
           setUser(null);

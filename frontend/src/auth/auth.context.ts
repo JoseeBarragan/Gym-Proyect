@@ -5,7 +5,7 @@ export type AuthStatus = 'loading' | 'ready';
 export interface AuthContextValue {
   user: Usuario | null;
   isAuthenticated: boolean;
-  login: (params: { email: string; password: string }) => Promise<void>;
+  login: (params: { email: string; password: string }) => Promise<Usuario>;
   logout: () => Promise<void>;
 }
 
