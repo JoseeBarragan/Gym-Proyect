@@ -56,3 +56,6 @@ Content-Type: application/json
     "idSocio": "896a3c5f-20d9-461c-9224-8a669aae7326",
     "idTipoMembresia": "b0eebc99-9c0b-4ef8-bb6d-6bb9bd380b11"
 }
+
+###
+GET http://localhost:3000/Clase

@@ -5,7 +5,11 @@ import { ProtectedRoute } from '../auth/ProtectedRoute';
 import { AdminLayout } from '../admin/layout/AdminLayout';
 import { DashboardPage } from '../admin/pages/DashboardPage';
 import { UsersAdminPage } from '../admin/pages/UsersAdminPage';
-import { PlaceholderAdminPage } from '../admin/pages/PlaceholderAdminPage';
+import { ClasesAdminPage } from '../admin/pages/ClasesAdminPage';
+import MembresiasAdminPage from '../admin/features/membresias/MembresiasAdminPage';
+import PagosAdminPage from '../admin/features/pagos/PagosAdminPage';
+import ReservasAdminPage from '../admin/features/reservas/ReservasAdminPage';
+import SettingsAdminPage from '../admin/pages/SettingsAdminPage';
 
 export function AppRouter() {
   return (
@@ -22,10 +26,11 @@ export function AppRouter() {
       >
         <Route index element={<DashboardPage />} />
         <Route path="users" element={<UsersAdminPage />} />
-        <Route path="classes" element={<PlaceholderAdminPage title="Gestión de Clases" description="Administra horarios, asignación de instructores y cupos." />} />
-        <Route path="memberships" element={<PlaceholderAdminPage title="Gestión de Membresías" description="Controla los tipos de membresías y el estado de cada cliente." />} />
-        <Route path="payments" element={<PlaceholderAdminPage title="Gestión de Pagos" description="Visualiza ingresos, transacciones de Stripe y reembolsos." />} />
-        <Route path="reservations" element={<PlaceholderAdminPage title="Gestión de Reservas" description="Ver y cancelar las reservas de las clases." />} />
+        <Route path="classes" element={<ClasesAdminPage />} />
+        <Route path="memberships" element={<MembresiasAdminPage />} />
+        <Route path="payments" element={<PagosAdminPage />} />
+        <Route path="reservations" element={<ReservasAdminPage />} />
+        <Route path="settings" element={<SettingsAdminPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>

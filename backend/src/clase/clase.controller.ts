@@ -11,7 +11,7 @@ import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiForbiddenR
 
 @ApiTags('Clase')
 @ApiBearerAuth()
-@Controller()
+@Controller("Clase")
 export class ClaseController {
     constructor(
         private readonly getAllClasesService: GetAllClasesService,

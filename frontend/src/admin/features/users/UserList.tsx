@@ -1,11 +1,23 @@
-import { useUsers, UserItem } from './useUsers';
-import { Mail, Shield, User } from 'lucide-react';
+import { useUsers, useDeleteUser } from './useUsers';
+import type { UserItem } from './useUsers';
+import { Mail, Shield, User, Trash2, Edit2 } from 'lucide-react';
 
-export function UserList() {
+interface UserListProps {
+  onEdit?: (user: UserItem) => void;
+}
+
+export function UserList({ onEdit }: UserListProps) {
   const { data: users, isLoading, isError } = useUsers();
+  const deleteMutation = useDeleteUser();
 
   if (isLoading) return <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>Cargando usuarios...</div>;
   if (isError) return <div style={{ padding: '2rem', textAlign: 'center', color: '#ef4444' }}>Error al cargar usuarios.</div>;
+
+  const handleDelete = (id: string) => {
+    if (window.confirm("¿Seguro que deseas eliminar este usuario?")) {
+      deleteMutation.mutate(id);
+    }
+  };
 
   return (
     <div className="admin-card admin-table-container" style={{ padding: 0 }}>
@@ -46,9 +58,14 @@ export function UserList() {
                 </div>
               </td>
               <td>
-                <button className="action-btn">
-                  Editar
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <button className="action-btn" onClick={() => onEdit && onEdit(user)} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <Edit2 size={14} /> Editar
+                  </button>
+                  <button className="action-btn" onClick={() => handleDelete(user.id)} style={{ color: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <Trash2 size={14} /> Eliminar
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

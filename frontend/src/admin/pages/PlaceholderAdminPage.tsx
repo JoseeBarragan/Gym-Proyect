@@ -1,17 +1,18 @@
-export function PlaceholderAdminPage({ title, description }: { title: string, description: string }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div className="admin-card">
-        <h1 className="admin-page-title">{title}</h1>
-        <p className="admin-page-subtitle">{description}</p>
-      </div>
+import { FC } from 'react';
 
-      <div className="admin-card" style={{ padding: '3rem', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-        <div>
-          <p style={{ color: '#e2e8f0', fontWeight: 500, marginBottom: '1rem' }}>Esta sección se encuentra en desarrollo.</p>
-          <p style={{ fontSize: '0.875rem', color: '#94a3b8' }}>Aquí se integrarán los endpoints de la API correspondientes a <code style={{ backgroundColor: '#2d323e', padding: '0.2rem 0.4rem', borderRadius: '0.25rem' }}>{title}</code>.</p>
-        </div>
+const PlaceholderAdminPage: FC<{ title: string }> = ({ title }) => {
+  return (
+    <div className="admin-content">
+      <div className="admin-header">
+        <h1 className="admin-title">{title}</h1>
+      </div>
+      <div className="admin-card">
+        <p style={{ color: "var(--text-secondary)" }}>
+          Esta sección ({title}) se encuentra en desarrollo o el backend no provee endpoints administrativos para la misma.
+        </p>
       </div>
     </div>
   );
-}
+};
+
+export default PlaceholderAdminPage;

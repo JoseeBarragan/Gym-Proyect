@@ -7,9 +7,10 @@ import { GetByIdClaseService } from "./services/getById.service";
 import { UsersRepository } from "../users/repository/UsersRepository";
 import { UpdateClaseService } from "./services/UpdateClase.service";
 import { DeleteClaseService } from "./services/DeleteClase.service";
+import { CreateClaseService } from "./services/CreateClase.service";
 
 
-Module({
+@Module({
     controllers: [ClaseController],
     providers: [
         {
@@ -24,7 +25,8 @@ Module({
         GetAllClasesService,
         GetByIdClaseService,
         UpdateClaseService,
-        DeleteClaseService
+        DeleteClaseService,
+        CreateClaseService
     ]
 })
 
