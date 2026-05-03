@@ -39,7 +39,7 @@ export function UserList({ onEdit }: UserListProps) {
                     <User size={16} />
                   </div>
                   <span style={{ fontWeight: 500, color: '#f8fafc' }}>
-                    {user.name || user.nombre || 'Sin nombre'} {user.apellido || ''}
+                    { user.nombre } { user.apellido }
                   </span>
                 </div>
               </td>
@@ -51,9 +51,9 @@ export function UserList({ onEdit }: UserListProps) {
               </td>
               <td>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Shield size={14} color={(user.role || user.tipoUsuario) === 'Administrador' ? '#818cf8' : '#94a3b8'} />
-                  <span className={`role-badge ${(user.role || user.tipoUsuario) === 'Administrador' ? 'role-admin' : 'role-user'}`}>
-                    {user.role || user.tipoUsuario || 'Socio'}
+                  <Shield size={14} color={(user.tipoUsuario) === 'Administrador' ? '#818cf8' : '#94a3b8'} />
+                  <span className={`role-badge ${(user.tipoUsuario) === 'Administrador' ? 'role-admin' : 'role-user'}`}>
+                    {user.tipoUsuario}
                   </span>
                 </div>
               </td>

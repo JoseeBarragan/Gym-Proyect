@@ -2,7 +2,6 @@ import { useState } from 'react';
 import type { FC } from 'react';
 import { useClases } from './useClases';
 import type { ClaseItem } from './useClases';
-import { ReservasModal } from '../reservas/ReservasModal';
 import { Trash2, Edit } from 'lucide-react';
 
 interface Props {
@@ -11,9 +10,6 @@ interface Props {
 
 export const ClaseList: FC<Props> = ({ onEdit }) => {
   const { data: clases, isLoading, isError, removeClase } = useClases();
-  
-  const [selectedClaseId, setSelectedClaseId] = useState<string | null>(null);
-  const [selectedClaseName, setSelectedClaseName] = useState<string>('');
   
   // Delete Modal State
   const [claseToDelete, setClaseToDelete] = useState<ClaseItem | null>(null);
@@ -104,13 +100,6 @@ export const ClaseList: FC<Props> = ({ onEdit }) => {
           </div>
         </div>
       )}
-
-      <ReservasModal  
-        isOpen={!!selectedClaseId} 
-        onClose={() => setSelectedClaseId(null)}
-        idClase={selectedClaseId}
-        claseNombre={selectedClaseName}
-      />
     </div>
   );
 };

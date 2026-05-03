@@ -8,6 +8,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   claseToEdit: ClaseItem | null;
+  onSubmit?: (data: ClaseItem | Partial<ClaseItem>) => void;
 }
 
 interface FormValues {
@@ -20,7 +21,7 @@ interface FormValues {
   idInstructor?: string;
 }
 
-export const ClaseFormModal: FC<Props> = ({ isOpen, onClose, claseToEdit }) => {
+export const ClaseFormModal: FC<Props> = ({ isOpen, onClose, claseToEdit, onSubmit }) => {
   const { createClase, updateClase } = useClases();
   const { register, handleSubmit, reset } = useForm<FormValues>();
 
@@ -50,7 +51,7 @@ export const ClaseFormModal: FC<Props> = ({ isOpen, onClose, claseToEdit }) => {
 
   if (!isOpen) return null;
 
-  const onSubmit = (data: FormValues) => {
+  const onSend = (data: FormValues) => {
     const payload = {
         ...data,
         duracionMinutos: Number(data.duracionMinutos),
@@ -63,7 +64,7 @@ export const ClaseFormModal: FC<Props> = ({ isOpen, onClose, claseToEdit }) => {
       );
     } else {
       // NOTE: En el backend create necesita idInstructor sí o sí
-      createClase.mutate(payload as any, { onSuccess: onClose });
+      createClase.mutate(payload as ClaseItem, { onSuccess: onClose });
     }
   };
 
@@ -76,33 +77,33 @@ export const ClaseFormModal: FC<Props> = ({ isOpen, onClose, claseToEdit }) => {
             &times;
           </button>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="admin-form">
+        <form onSubmit={handleSubmit(onSubmit ?? onSend)} className="admin-form">
           <div className="admin-form-group">
             <label>Nombre</label>
-            <input {...register('nombre', { required: true })} />
+            <input defaultValue={claseToEdit?.nombre || ""} {...register('nombre', { required: true })} />
           </div>
           <div className="admin-form-group">
             <label>Descripción</label>
-            <input {...register('descripcion', { required: true })} />
+            <input defaultValue={claseToEdit?.descripcion || ""} {...register('descripcion', { required: true })} />
           </div>
           <div className="admin-form-row">
             <div className="admin-form-group">
               <label>Día</label>
-              <input {...register('dia', { required: true })} placeholder="Ej: Lunes" />
+              <input defaultValue={claseToEdit?.dia || ""} {...register('dia', { required: true })} placeholder="Ej: Lunes" />
             </div>
             <div className="admin-form-group">
               <label>Horario</label>
-              <input {...register('horario', { required: true })} type="time" />
+              <input defaultValue={claseToEdit?.horario || ""} {...register('horario', { required: true })} type="time" />
             </div>
           </div>
           <div className="admin-form-row">
             <div className="admin-form-group">
               <label>Duración (min)</label>
-              <input {...register('duracionMinutos', { required: true, valueAsNumber: true })} type="number" />
+              <input defaultValue={claseToEdit?.duracionMinutos || ""} {...register('duracionMinutos', { required: true, valueAsNumber: true })} type="number" />
             </div>
             <div className="admin-form-group">
               <label>Cupo</label>
-              <input {...register('cupo', { required: true, valueAsNumber: true })} type="number" />
+              <input defaultValue={claseToEdit?.cupo || ""} {...register('cupo', { required: true, valueAsNumber: true })} type="number" />
             </div>
           </div>
           {!claseToEdit && (

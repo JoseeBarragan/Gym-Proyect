@@ -1,10 +1,16 @@
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/auth.context';
-import { Users, CalendarDays, Wallet, CreditCard, LayoutDashboard, LogOut, CheckSquare } from 'lucide-react';
+import { Users, CalendarDays, Wallet, CreditCard, LayoutDashboard, LogOut } from 'lucide-react';
 import '../admin.css';
 
 export function AdminLayout() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    logout()
+    navigate('/login', { replace: true });
+  };
 
   const NAV_ITEMS = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
@@ -12,7 +18,6 @@ export function AdminLayout() {
     { name: 'Clases', path: '/admin/classes', icon: CalendarDays },
     { name: 'Membresías', path: '/admin/memberships', icon: Wallet },
     { name: 'Pagos', path: '/admin/payments', icon: CreditCard },
-    { name: 'Reservas', path: '/admin/reservations', icon: CheckSquare },
   ];
 
   return (
@@ -43,7 +48,7 @@ export function AdminLayout() {
         </nav>
 
         <div className="admin-sidebar-footer">
-          <button onClick={logout} className="admin-logout-btn">
+          <button onClick={handleLogout} className="admin-logout-btn">
             <LogOut size={20} />
             <span>Cerrar Sesión</span>
           </button>

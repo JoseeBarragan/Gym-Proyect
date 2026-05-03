@@ -8,7 +8,6 @@ import { UsersAdminPage } from '../admin/pages/UsersAdminPage';
 import { ClasesAdminPage } from '../admin/pages/ClasesAdminPage';
 import MembresiasAdminPage from '../admin/features/membresias/MembresiasAdminPage';
 import PagosAdminPage from '../admin/features/pagos/PagosAdminPage';
-import ReservasAdminPage from '../admin/features/reservas/ReservasAdminPage';
 import SettingsAdminPage from '../admin/pages/SettingsAdminPage';
 
 export function AppRouter() {
@@ -29,7 +28,6 @@ export function AppRouter() {
         <Route path="classes" element={<ClasesAdminPage />} />
         <Route path="memberships" element={<MembresiasAdminPage />} />
         <Route path="payments" element={<PagosAdminPage />} />
-        <Route path="reservations" element={<ReservasAdminPage />} />
         <Route path="settings" element={<SettingsAdminPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/login" replace />} />

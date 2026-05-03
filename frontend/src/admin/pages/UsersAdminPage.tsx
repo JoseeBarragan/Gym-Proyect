@@ -6,32 +6,31 @@ import type { UserItem } from '../features/users/useUsers';
 import { Plus } from 'lucide-react';
 
 export function UsersAdminPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<UserItem | null>(null);
+  const [editingUser, setEditingUser] = useState<UserItem | null | undefined>(undefined);
 
   const createUserMutation = useCreateUser();
   const updateUserMutation = useUpdateUser();
 
   const handleOpenModal = (user?: UserItem) => {
-    setEditingUser(user || null);
-    setIsModalOpen(true);
+    setEditingUser(user ?? null);
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setEditingUser(null);
+    setEditingUser(undefined);
   };
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (data: UserItem | Partial<UserItem>) => {
     if (editingUser) {
       // Remover campos que no se pueden actualizar por PATCH como email si no queremos, o id.
       // El id es idUsuario o id.
+      const partialData = data as Partial<UserItem>
       const id = editingUser.id;
-      updateUserMutation.mutate({ id, data: { nombre: data.nombre, apellido: data.apellido, telefono: data.telefono, email: data.email } }, {
+      updateUserMutation.mutate({ id, data: partialData }, {
         onSuccess: () => handleCloseModal()
       });
     } else {
-      createUserMutation.mutate(data, {
+      const userData = data as UserItem
+      createUserMutation.mutate(userData, {
         onSuccess: () => handleCloseModal()
       });
     }
@@ -51,12 +50,15 @@ export function UsersAdminPage() {
       </div>
 
       <UserList onEdit={handleOpenModal} />
-      <UserFormModal 
-        isOpen={isModalOpen} 
-        onClose={handleCloseModal} 
-        onSubmit={handleSubmit} 
-        user={editingUser} 
-      />
+      {editingUser !== undefined && (
+        <UserFormModal 
+          key={editingUser?.id ?? 'new'}
+          isOpen={editingUser !== undefined}
+          onClose={handleCloseModal} 
+          onSubmit={handleSubmit} 
+          user={editingUser} 
+        />
+      )}
     </div>
   );
 }

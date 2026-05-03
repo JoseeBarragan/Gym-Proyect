@@ -3,13 +3,11 @@ import { fetchWithAuth } from '../../api/apiConfig';
 
 export interface UserItem {
   id: string;
-  name?: string;
   contrasena?: string;
   telefono?: string;
   nombre?: string;
   apellido?: string;
   email: string;
-  role?: string;
   tipoUsuario?: string;
 }
 
@@ -30,11 +28,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 export function useCreateUser() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: any) => {
-      const endpoint = data.tipoUsuario === 'Instructor' ? '/users/instructor' : '/auth/signup';
+    mutationFn: async (data: UserItem) => {
+      const endpoint = data.tipoUsuario === 'Instructor' ? '/Users/instructor' : '/auth/signup';
       return fetchWithAuth(endpoint, {
         method: 'POST',
         body: JSON.stringify(data),
+        credentials: "include",
       });
     },
     onSuccess: () => {
@@ -46,10 +45,11 @@ export function useCreateUser() {
 export function useUpdateUser() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: any }) => {
-      return fetchWithAuth(`/users/profile/${id}`, {
+    mutationFn: async ({ id, data }: { id: string; data: Partial<UserItem> }) => {
+      return fetchWithAuth(`/Users/profile/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(data),
+        credentials: "include"
       });
     },
     onSuccess: () => {

@@ -21,13 +21,15 @@ export function ClasesAdminPage() {
     setEditingClase(null);
   };
 
-  const handleSubmit = (data: ClaseItem) => {
+  const handleSubmit = (data: ClaseItem | Partial<ClaseItem>) => {
     if (editingClase && editingClase.idClase) {
-      updateClase.mutate({ id: editingClase.idClase, data }, {
+      const partialData = data as Partial<ClaseItem>;
+      updateClase.mutate({...partialData, idClase: editingClase.idClase }, {
         onSuccess: () => handleCloseModal()
       });
     } else {
-      createClase.mutate(data, {
+      const claseData = data as ClaseItem;
+      createClase.mutate(claseData, {
         onSuccess: () => handleCloseModal()
       });
     }
@@ -50,8 +52,8 @@ export function ClasesAdminPage() {
       <ClaseFormModal 
         isOpen={isModalOpen} 
         onClose={handleCloseModal} 
-        onSubmit={handleSubmit} 
-        clase={editingClase} 
+        claseToEdit={editingClase} 
+        onSubmit={handleSubmit}
       />
     </div>
   );
