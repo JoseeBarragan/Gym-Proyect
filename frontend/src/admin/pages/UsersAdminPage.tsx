@@ -4,27 +4,31 @@ import { UserFormModal } from '../features/users/UserFormModal';
 import { useCreateUser, useUpdateUser } from '../features/users/useUsers';
 import type { UserItem } from '../features/users/useUsers';
 import { Plus } from 'lucide-react';
+import "../admin.css"
 
 export function UsersAdminPage() {
   const [editingUser, setEditingUser] = useState<UserItem | null | undefined>(undefined);
+  const [openModal, setOpenModal] = useState(false)
 
   const createUserMutation = useCreateUser();
   const updateUserMutation = useUpdateUser();
 
   const handleOpenModal = (user?: UserItem) => {
     setEditingUser(user ?? null);
+    setOpenModal(true);
   };
 
   const handleCloseModal = () => {
     setEditingUser(undefined);
+    setOpenModal(false);
   };
 
-  const handleSubmit = (data: UserItem | Partial<UserItem>) => {
+  const handleSubmit = (data: UserItem | Partial<UserItem>, id: string) => {
     if (editingUser) {
       // Remover campos que no se pueden actualizar por PATCH como email si no queremos, o id.
       // El id es idUsuario o id.
-      const partialData = data as Partial<UserItem>
-      const id = editingUser.id;
+      const { contrasena, ...restData } = data
+      const partialData = contrasena !== "" ? { ...data as Partial<UserItem> } : { ...restData as Partial<UserItem>}
       updateUserMutation.mutate({ id, data: partialData }, {
         onSuccess: () => handleCloseModal()
       });
@@ -34,6 +38,7 @@ export function UsersAdminPage() {
         onSuccess: () => handleCloseModal()
       });
     }
+    handleCloseModal();
   };
 
   return (
@@ -45,15 +50,15 @@ export function UsersAdminPage() {
         </div>
         <button className="admin-btn-primary" onClick={() => handleOpenModal()}>
           <Plus size={18} />
-          Nuevo Usuario
+          Nuevo Instructor
         </button>
       </div>
 
       <UserList onEdit={handleOpenModal} />
-      {editingUser !== undefined && (
+      {openModal && (
         <UserFormModal 
-          key={editingUser?.id ?? 'new'}
-          isOpen={editingUser !== undefined}
+          key={editingUser?.idUsuario ?? 'new'}
+          isOpen={openModal}
           onClose={handleCloseModal} 
           onSubmit={handleSubmit} 
           user={editingUser} 

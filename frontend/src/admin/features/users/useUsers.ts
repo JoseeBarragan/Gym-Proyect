@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchWithAuth } from '../../api/apiConfig';
 
 export interface UserItem {
-  id: string;
+  idUsuario: string;
   contrasena?: string;
   telefono?: string;
   nombre?: string;
@@ -29,15 +29,15 @@ export function useCreateUser() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: UserItem) => {
-      const endpoint = data.tipoUsuario === 'Instructor' ? '/Users/instructor' : '/auth/signup';
+      const endpoint = '/Users/instructor'
       return fetchWithAuth(endpoint, {
         method: 'POST',
         body: JSON.stringify(data),
         credentials: "include",
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['admin-users'] });
     },
   });
 }
@@ -52,8 +52,8 @@ export function useUpdateUser() {
         credentials: "include"
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['admin-users'] });
     },
   });
 }
@@ -64,10 +64,11 @@ export function useDeleteUser() {
     mutationFn: async (id: string) => {
       return fetchWithAuth(`/users/${id}`, {
         method: 'DELETE',
+        credentials: "include"
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['admin-users'] });
     },
   });
 }

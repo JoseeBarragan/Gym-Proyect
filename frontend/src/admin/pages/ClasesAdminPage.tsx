@@ -12,7 +12,7 @@ export function ClasesAdminPage() {
   const {createClase, updateClase} = useClases();
 
   const handleOpenModal = (clase?: ClaseItem) => {
-    setEditingClase(clase || null);
+    setEditingClase(clase ?? null);
     setIsModalOpen(true);
   };
 
@@ -49,12 +49,17 @@ export function ClasesAdminPage() {
       </div>
 
       <ClaseList onEdit={handleOpenModal} />
-      <ClaseFormModal 
-        isOpen={isModalOpen} 
-        onClose={handleCloseModal} 
-        claseToEdit={editingClase} 
-        onSubmit={handleSubmit}
-      />
+      {
+        isModalOpen && (
+          <ClaseFormModal 
+            key={editingClase?.idClase ?? 'new'}
+            isOpen={isModalOpen} 
+            onClose={handleCloseModal} 
+            claseToEdit={editingClase} 
+            onSubmit={handleSubmit}
+          />
+        )
+      }
     </div>
   );
 }
