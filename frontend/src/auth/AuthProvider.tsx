@@ -28,7 +28,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login: async ({ email, password }: { email: string; password: string }) => {
         const res = await fetch(`${API_URL}/auth/login`, {
           method: 'POST',
-          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, contrasena: password }),
         });

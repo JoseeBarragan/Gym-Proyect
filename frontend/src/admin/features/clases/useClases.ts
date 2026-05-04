@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchWithAuth } from '../../api/apiConfig';
+import { toast } from 'react-toastify';
 
 export interface ClaseItem {
   idClase: string;
@@ -35,13 +36,17 @@ export function useClases() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clases'] });
+      toast.success('Clase creada exitosamente');
+    },
+    onError: (error: Error) => {
+      toast.error(`Error al crear clase: ${error.message || 'Ocurrió un error inesperado'}`);
     },
   });
 
   const updateClase = useMutation({
     mutationFn: async (data: Partial<ClaseItem> & { idClase: string }) => {
       const { idClase, ...rest } = data;
-      return fetchWithAuth(`/Clase/update/${idClase}`, {
+      return fetchWithAuth(`/Clase/${idClase}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(rest),
@@ -49,6 +54,10 @@ export function useClases() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clases'] });
+      toast.success('Clase actualizada exitosamente');
+    },
+    onError: (error: Error) => {
+      toast.error(`Error al actualizar clase: ${error.message || 'Ocurrió un error inesperado'}`);
     },
   });
 
@@ -61,6 +70,10 @@ export function useClases() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clases'] });
+      toast.success('Estado de clase actualizado exitosamente');
+    },
+    onError: (error: Error) => {
+      toast.error(`Error al actualizar estado: ${error.message || 'Ocurrió un error inesperado'}`);
     },
   });
 
@@ -72,6 +85,10 @@ export function useClases() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clases'] });
+      toast.success('Clase eliminada exitosamente');
+    },
+    onError: (error: Error) => {
+      toast.error(`Error al eliminar clase: ${error.message || 'Ocurrió un error inesperado'}`);
     },
   });
 

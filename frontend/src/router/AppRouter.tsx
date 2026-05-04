@@ -6,7 +6,6 @@ import { AdminLayout } from '../admin/layout/AdminLayout';
 import { DashboardPage } from '../admin/pages/DashboardPage';
 import { UsersAdminPage } from '../admin/pages/UsersAdminPage';
 import { ClasesAdminPage } from '../admin/pages/ClasesAdminPage';
-import MembresiasAdminPage from '../admin/features/membresias/MembresiasAdminPage';
 import PagosAdminPage from '../admin/features/pagos/PagosAdminPage';
 import SettingsAdminPage from '../admin/pages/SettingsAdminPage';
 
@@ -26,7 +25,6 @@ export function AppRouter() {
         <Route index element={<DashboardPage />} />
         <Route path="users" element={<UsersAdminPage />} />
         <Route path="classes" element={<ClasesAdminPage />} />
-        <Route path="memberships" element={<MembresiasAdminPage />} />
         <Route path="payments" element={<PagosAdminPage />} />
         <Route path="settings" element={<SettingsAdminPage />} />
       </Route>

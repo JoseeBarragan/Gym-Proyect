@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useUsers, useDeleteUser } from './useUsers';
 import type { UserItem } from './useUsers';
-import { Mail, Shield, User, Trash2, Edit2 } from 'lucide-react';
+import { Mail, Shield, User, Trash2, Edit2, Search, Filter } from 'lucide-react';
 
 interface UserListProps {
   onEdit?: (user: UserItem) => void;
@@ -12,15 +12,28 @@ export function UserList({ onEdit }: UserListProps) {
   const [userToDelete, setUserToDelete] = useState<UserItem | null>(null);
   const deleteMutation = useDeleteUser();
   
+  const [filterEmail, setFilterEmail] = useState('');
+  const [filterRole, setFilterRole] = useState('');
+  
   const orderUsers = useMemo(() => {
     if (!users) return [];
-    return [...users].sort((a, b) => {
+    let filteredUsers = [...users];
+
+    if (filterEmail) {
+      filteredUsers = filteredUsers.filter(u => u.email.toLowerCase().includes(filterEmail.toLowerCase()));
+    }
+
+    if (filterRole) {
+      filteredUsers = filteredUsers.filter(u => u.tipoUsuario === filterRole);
+    }
+
+    return filteredUsers.sort((a, b) => {
       if (a.nombre && b.nombre) {
         return a.nombre.localeCompare(b.nombre);
       }
       return 0;
     });
-  }, [users])
+  }, [users, filterEmail, filterRole]);
 
   if (isLoading) return <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>Cargando usuarios...</div>;
   if (isError) return <div style={{ padding: '2rem', textAlign: 'center', color: '#ef4444' }}>Error al cargar usuarios.</div>;
@@ -38,11 +51,38 @@ export function UserList({ onEdit }: UserListProps) {
   };
 
   return (
-    <div className="admin-card admin-table-container" style={{ padding: 0 }}>
-      <table className="admin-table">
-        <thead>
-          <tr>
-            <th>Nombre</th>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#0f1115', padding: '0.5rem', borderRadius: '0.375rem', border: '1px solid #2d323e', flex: '1', minWidth: '200px' }}>
+          <Search size={16} color="#94a3b8" />
+          <input 
+            type="text" 
+            placeholder="Buscar por email..." 
+            value={filterEmail}
+            onChange={(e) => setFilterEmail(e.target.value)}
+            style={{ background: 'transparent', border: 'none', color: '#fff', outline: 'none', width: '100%' }}
+          />
+        </div>
+        <div className="flex items-center gap-2 bg-[#0f1115] p-2 rounded-md border border-[#2d323e] min-w-37.5">
+          <Filter size={16} color="#94a3b8" />
+          <select 
+            value={filterRole}
+            onChange={(e) => setFilterRole(e.target.value)}
+            className="bg-transparent hover:bg-[#2d323e] transition-all ease-in-out duration-150 border-none text-[#94a3b8] outline-none w-full cursor-pointer focus:ring-0 focus:outline-none appearance-none"
+            style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
+          >
+            <option value="" className="bg-[#0f1115] text-gray-200">Todos los roles</option>
+            <option value="Administrador" className="bg-[#0f1115] text-gray-200">Administrador</option>
+            <option value="Instructor" className="bg-[#0f1115] text-gray-200">Instructor</option>
+            <option value="Socio" className="bg-[#0f1115] text-gray-200">Socio</option>
+          </select>
+        </div>
+      </div>
+      <div className="admin-card admin-table-container" style={{ padding: 0 }}>
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
             <th>Email</th>
             <th>Rol</th>
             <th>Acciones</th>
@@ -120,6 +160,7 @@ export function UserList({ onEdit }: UserListProps) {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

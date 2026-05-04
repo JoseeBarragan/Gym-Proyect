@@ -1,6 +1,6 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/auth.context';
-import { Users, CalendarDays, Wallet, CreditCard, LayoutDashboard, LogOut } from 'lucide-react';
+import { Users, CalendarDays, CreditCard, LayoutDashboard, LogOut } from 'lucide-react';
 import '../admin.css';
 
 export function AdminLayout() {
@@ -16,7 +16,6 @@ export function AdminLayout() {
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
     { name: 'Usuarios', path: '/admin/users', icon: Users },
     { name: 'Clases', path: '/admin/classes', icon: CalendarDays },
-    { name: 'Membresías', path: '/admin/memberships', icon: Wallet },
     { name: 'Pagos', path: '/admin/payments', icon: CreditCard },
   ];
 

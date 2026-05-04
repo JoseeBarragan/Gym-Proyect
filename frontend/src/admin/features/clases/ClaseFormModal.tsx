@@ -120,11 +120,26 @@ export const ClaseFormModal: FC<Props> = ({ isOpen, onClose, claseToEdit, onSubm
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem' }}>
             <div className="admin-form-group">
               <label>Día</label>
-              <input 
+              <select 
                 {...register('dia', { required: 'El día es requerido' })} 
-                style={getInputStyle(!!errors.dia)}
-                placeholder="Ej: Lunes" 
-              />
+                style={{
+                  ...getInputStyle(!!errors.dia),
+                  backgroundColor: '#0f1115',
+                  color: '#fff',
+                  padding: '0.5rem',
+                  borderRadius: '0.375rem',
+                  border: '1px solid #2d323e',
+                }}
+              >
+                <option value="">Seleccione un día</option>
+                <option value="Lunes">Lunes</option>
+                <option value="Martes">Martes</option>
+                <option value="Miercoles">Miércoles</option>
+                <option value="Jueves">Jueves</option>
+                <option value="Viernes">Viernes</option>
+                <option value="Sabado">Sábado</option>
+                <option value="Domingo">Domingo</option>
+              </select>
               {errors.dia && <span style={errorTextStyle}>{errors.dia.message}</span>}
             </div>
             
