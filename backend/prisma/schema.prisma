@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Clase {
@@ -43,13 +44,14 @@ model Pago {
 }
 
 model Reserva {
-  idReserva     String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  idClase       String        @db.Uuid
-  idSocio       String        @db.Uuid
-  fechaReserva  DateTime      @db.Date
+  idReserva String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  idClase String @db.Uuid
+  idSocio String @db.Uuid
+  fechaReserva DateTime @db.Date
   estadoReserva EstadoReserva
-  Clase         Clase         @relation(fields: [idClase], references: [idClase], onDelete: NoAction, onUpdate: NoAction, map: "idClaseFK")
-  Usuario       Usuario       @relation(fields: [idSocio], references: [idUsuario], onDelete: Cascade, onUpdate: NoAction, map: "idSocioFK")
+  asistencia Boolean?
+  Clase Clase @relation(fields: [idClase], references: [idClase], onDelete: NoAction, onUpdate: NoAction, map: "idClaseFK")
+  Usuario Usuario @relation(fields: [idSocio], references: [idUsuario], onDelete: Cascade, onUpdate: NoAction, map: "idSocioFK")
 
   @@unique([idSocio, idClase, fechaReserva])
 }

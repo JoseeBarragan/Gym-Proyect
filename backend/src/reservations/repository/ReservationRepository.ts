@@ -57,13 +57,34 @@ export class ReservationRepository implements IReservationsRepository {
         }
     }
 
-    async getReservationForAClase(idClase: string, fechaReserva: Date): Promise<number> {
-        try {
-            return await this.prisma.reserva.count({
-                where: { idClase, fechaReserva, estadoReserva: "Reservada" }
-            })
-        } catch (err) {
-            throw new ServiceUnavailableException('Error al obtener las reservas: ' + err);
-        }
+  async getReservationForAClase(idClase: string, fechaReserva: Date): Promise<number> {
+    try {
+      return await this.prisma.reserva.count({
+        where: { idClase, fechaReserva, estadoReserva: "Reservada" }
+      })
+    } catch (err) {
+      throw new ServiceUnavailableException('Error al obtener las reservas: ' + err);
     }
+  }
+
+  async getReservationById(idReserva: string): Promise<Reserva | null> {
+    try {
+      return await this.prisma.reserva.findUnique({
+        where: { idReserva }
+      })
+    } catch (err) {
+      throw new ServiceUnavailableException('Error al obtener la reserva: ' + err);
+    }
+  }
+
+  async updateAttendance(idReserva: string, asistencia: boolean | null): Promise<Reserva> {
+    try {
+      return await this.prisma.reserva.update({
+        where: { idReserva },
+        data: { asistencia }
+      })
+    } catch (err) {
+      throw new ServiceUnavailableException('Error al actualizar la asistencia: ' + err);
+    }
+  }
 }

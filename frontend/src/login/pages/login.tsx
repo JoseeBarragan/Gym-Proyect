@@ -41,9 +41,13 @@ export default function LoginPage() {
         setTimeout(() => {
           setIsSuccess(false);
           if (user.tipoUsuario === 'Administrador') {
-            navigate('/admin', { replace: true });
-          } else {
-            navigate('/login', { replace: true });
+            navigate('/admin');
+          } 
+          else if (user.tipoUsuario === 'Instructor') {
+            navigate('/instructor');
+          }
+          else {
+            navigate('/login');
           }
         }, 800);
       } catch {

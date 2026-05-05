@@ -6,6 +6,7 @@ import { DeleteReservationService } from './services/deleteReservation.service';
 import { CreateReservationsService } from './services/createReservations.service';
 import { GetSocioReservationsService } from './services/getSocioReservations.service';
 import { GetClaseReservationsService } from './services/getClaseReservations.service';
+import { UpdateReservationAttendanceService } from './services/updateReservationAttendance.service';
 import { MembershipRepository } from '../membership/repository/MembershipRepository';
 import { ClaseRepository } from '../clase/repository/ClasesRepository';
 @Module({
@@ -15,6 +16,7 @@ import { ClaseRepository } from '../clase/repository/ClasesRepository';
     DeleteReservationService,
     GetSocioReservationsService,
     GetClaseReservationsService,
+    UpdateReservationAttendanceService,
     {
       provide: "ClasesRepository",
       useClass: ClaseRepository
