@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchWithAuth } from '../../api/apiConfig';
 import { toast } from 'react-toastify';
+import type { UserItem } from '../users/useUsers';
 
 export interface ClaseItem {
   idClase: string;
@@ -24,6 +25,15 @@ export function useClases() {
         credentials: "include"
       });
     },
+  });
+
+  const instructoresQuery = useQuery<UserItem[], Error>({
+    queryKey: ['instructores'],
+    queryFn: async () => {
+      return fetchWithAuth('/users/instructores', {
+        credentials: "include"
+      });
+    }
   });
 
   const createClase = useMutation({
@@ -100,5 +110,6 @@ export function useClases() {
     updateClase,
     toggleClaseState,
     removeClase,
+    instructores: instructoresQuery.data
   };
 }

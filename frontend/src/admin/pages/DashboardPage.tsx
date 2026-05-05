@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { Users, CalendarDays, Wallet, CreditCard, PlayCircle, AlertCircle } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Users, CalendarDays, Wallet, CreditCard, PlayCircle, PieChart as PieChartIcon } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useUsers } from '../features/users/useUsers';
 import { usePagos } from '../features/pagos/usePagos';
 import { useClases } from '../features/clases/useClases';
@@ -19,7 +19,7 @@ export function DashboardPage() {
     const today = new Date();
     
     // Obtenemos los últimos 6 meses (incluyendo el actual)
-    const result = [];
+    const result: { name: string; month: number; year: number; ingresos: number }[] = [];
     for (let i = 5; i >= 0; i--) {
       const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
       result.push({ name: months[d.getMonth()], month: d.getMonth(), year: d.getFullYear(), ingresos: 0 });
@@ -51,7 +51,7 @@ export function DashboardPage() {
   // Últimos Usuarios Registrados (Actividad Reciente)
   // Como no hay endpoint de actividad genérico, listamos los últimos usuarios y pagos simulando actividad
   const actividadReciente = useMemo(() => {
-    const act = [];
+    const act: { id: string; usuario: string; accion: string; tiempo: string }[] = [];
     if (users && users.length > 0) {
       const latestUsers = [...users].reverse().slice(0, 3); // Simulamos últimos 3
       latestUsers.forEach((u, idx) => {
@@ -69,6 +69,26 @@ export function DashboardPage() {
 
   // Usuarios totales (Socios)
   const totalSocios = users?.filter(u => u.tipoUsuario === 'Socio').length || 0;
+
+  // Distribución de usuarios para el gráfico
+  const userDistribution = useMemo(() => {
+    if (!users) return [];
+    let socios = 0;
+    let admins = 0;
+    let instructores = 0;
+    
+    users.forEach(u => {
+      if (u.tipoUsuario === 'Socio') socios++;
+      else if (u.tipoUsuario === 'Administrador') admins++;
+      else if (u.tipoUsuario === 'Instructor') instructores++;
+    });
+
+    return [
+      { name: 'Socios', value: socios, color: '#f59e0b' },
+      { name: 'Instructores', value: instructores, color: '#10b981' },
+      { name: 'Admins', value: admins, color: '#3b82f6' }
+    ].filter(d => d.value > 0);
+  }, [users]);
 
   const stats = [
     { label: 'Usuarios Totales', value: users?.length || 0, icon: Users, color: '#3b82f6' },
@@ -154,14 +174,14 @@ export function DashboardPage() {
             <h2 className="admin-page-title" style={{ fontSize: '1.125rem', marginBottom: '1.5rem' }}>Clases de Hoy</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {clasesHoy.map((clase) => (
-                <div key={clase.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#0f1115', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #2d323e' }}>
+                <div key={clase.idClase} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#0f1115', padding: '1rem', borderRadius: '0.5rem', border: '1px solid #2d323e' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <div style={{ height: '3rem', width: '3rem', borderRadius: '0.5rem', backgroundColor: '#1e3a8a', color: '#60a5fa', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                       <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{clase.horario}</span>
                     </div>
                     <div>
                       <p style={{ color: '#f8fafc', fontWeight: 600, margin: 0 }}>{clase.nombre}</p>
-                      <p style={{ color: '#94a3b8', fontSize: '0.875rem', margin: '0.25rem 0 0 0' }}>Inst: {clase.instructor}</p>
+                      <p style={{ color: '#94a3b8', fontSize: '0.875rem', margin: '0.25rem 0 0 0' }}>Inst: {clase.idInstructor}</p>
                     </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
@@ -170,27 +190,52 @@ export function DashboardPage() {
                   </div>
                 </div>
               ))}
+              {clasesHoy.length === 0 && (
+                <p style={{ color: '#94a3b8', fontSize: '0.875rem' }}>No hay clases programadas para hoy.</p>
+              )}
             </div>
           </div>
 
-          {/* <div className="admin-card">
-            <h2 className="admin-page-title" style={{ fontSize: '1.125rem', marginBottom: '1.5rem' }}>Membresías por Vencer</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {membresiasPorVencer.map((mem) => (
-                <div key={mem.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '1rem', borderBottom: '1px solid #2d323e' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', padding: '0.5rem', borderRadius: '9999px', color: '#f59e0b' }}>
-                      <AlertCircle size={16} />
-                    </div>
-                    <span style={{ color: '#f8fafc', fontSize: '0.875rem', fontWeight: 500 }}>{mem.usuario}</span>
+          <div className="admin-card">
+            <h2 className="admin-page-title" style={{ fontSize: '1.125rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <PieChartIcon size={20} color="#6366f1" />
+              Distribución de Usuarios
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ height: '220px', width: '100%' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={userDistribution}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                      stroke="none"
+                    >
+                      {userDistribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#1a1d24', borderColor: '#2d323e', color: '#f8fafc', borderRadius: '0.5rem' }}
+                      itemStyle={{ color: '#f8fafc' }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem', marginTop: '1rem' }}>
+                {userDistribution.map((entry, index) => (
+                  <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: entry.color }}></div>
+                    <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>{entry.name}: <span style={{ color: '#f8fafc', fontWeight: 600 }}>{entry.value}</span></span>
                   </div>
-                  <span style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 600 }}>
-                    Vence en {mem.dias} días
-                  </span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div> */}
+          </div>
 
         </div>
       </div>

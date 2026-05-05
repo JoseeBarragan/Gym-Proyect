@@ -4,14 +4,41 @@ import { Public } from '../shared/decorators/PublicDecorator';
 import { HandleWebHookService } from './services/handleWebHook.service';
 import { CreatePaymentRequestDto } from './dto/createPaymentRequest.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse, ApiBody, ApiHeader } from '@nestjs/swagger';
+import { Roles } from '../shared/decorators/RoleDecorator';
+import { GetPaymentsService } from './services/getPayments.service';
 
 @ApiTags('Payment')
 @Controller('payment')
 export class PaymentController {
   constructor(
     private readonly createPaymentService: CreatePaymentService,
-    private readonly handleWebhookService: HandleWebHookService
+    private readonly handleWebhookService: HandleWebHookService,
+    private readonly getPaymentsService: GetPaymentsService
   ) {}
+
+  @Roles("Administrador")
+  @ApiBearerAuth()
+  @Get("")
+  @ApiOperation({ summary: 'Obtener todos los pagos', description: 'Retorna una lista con el historial de todos los pagos registrados en el sistema.' })
+  @ApiOkResponse({
+    description: 'Lista de pagos obtenida exitosamente.',
+    schema: {
+      example: [
+        {
+          idPago: '123e4567-e89b-12d3-a456-426614174000',
+          idMembresia: '987fcdeb-51a2-43d7-9012-3214567890ab',
+          monto: 1500,
+          fechaPago: '2026-05-04T10:30:00.000Z',
+          metodoPago: 'STRIPE',
+          estadoPago: 'COMPLETADO'
+        }
+      ]
+    }
+  })
+  async getPayments() {
+    return await this.getPaymentsService.execute();
+  }
+
 
   @Post("createPayment")
   @ApiBearerAuth()

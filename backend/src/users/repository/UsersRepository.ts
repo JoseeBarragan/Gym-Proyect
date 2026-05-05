@@ -97,4 +97,14 @@ export class UsersRepository implements IUsersRepository {
             throw new ServiceUnavailableException(`${err}`)
         }
     }
+
+    async getInstructores(): Promise<Usuario[]> {
+        try {
+            return await this.prisma.usuario.findMany({
+                where: {tipoUsuario: TipoUsuario.INSTRUCTOR}
+            });
+        } catch (err) {
+            throw new ServiceUnavailableException(`${err}`)
+        }
+    }
 }

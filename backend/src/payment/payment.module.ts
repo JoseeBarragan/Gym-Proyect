@@ -9,11 +9,13 @@ import { AsignMembershipService } from '../membership/services/AsignMembership.s
 import { RegisterPaymentService } from './services/RegisterPayment.service';
 import { MembershipRepository } from '../membership/repository/MembershipRepository';
 import { HandleWebHookService } from './services/handleWebHook.service';
+import { GetPaymentsService } from './services/getPayments.service';
 
 @Module({
   controllers: [PaymentController],
   providers: [
     CreatePaymentService,
+    GetPaymentsService,
     {
       provide: "IPaymentRepository",
       useClass: PaymentRepository

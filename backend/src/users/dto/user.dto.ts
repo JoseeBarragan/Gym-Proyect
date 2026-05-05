@@ -65,3 +65,30 @@ export class UpdateUserDto {
     @IsString()
     telefono?: string;
 }
+
+export class CreateInstructorDto {
+    @ApiProperty({ example: "nuevo@gym.com", description: "Email unico del usuario" })
+    @IsEmail()
+    @IsNotEmpty()
+    email!: string;
+
+    @ApiProperty({ example: "123456", description: "Contrasena del usuario" })
+    @IsString()
+    @IsNotEmpty()
+    contrasena!: string;
+
+    @ApiProperty({ example: "Ana", description: "Nombre" })
+    @IsString()
+    @IsNotEmpty()
+    nombre!: string;
+
+    @ApiProperty({ example: "Lopez", description: "Apellido" })
+    @IsString()
+    @IsNotEmpty()
+    apellido!: string;
+
+    @ApiProperty({ example: "1133445566", description: "Telefono" })
+    @IsString()
+    @IsNotEmpty()
+    telefono!: string;
+}

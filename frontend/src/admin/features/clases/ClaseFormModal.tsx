@@ -23,7 +23,7 @@ interface FormValues {
 }
 
 export const ClaseFormModal: FC<Props> = ({ isOpen, onClose, claseToEdit, onSubmit }) => {
-  const { createClase, updateClase } = useClases();
+  const { createClase, updateClase, instructores } = useClases();
   
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     defaultValues: {
@@ -183,15 +183,28 @@ export const ClaseFormModal: FC<Props> = ({ isOpen, onClose, claseToEdit, onSubm
             </div>
           </div>
 
-          {/* ID Instructor: Solo visible si es creación */}
+          {/* Instructor: Solo visible si es creación */}
           {!claseToEdit && (
             <div className="admin-form-group">
-              <label>ID del Instructor</label>
-              <input 
-                {...register('idInstructor', { required: 'El ID del instructor es obligatorio para nuevas clases' })} 
-                style={getInputStyle(!!errors.idInstructor)}
-                placeholder="UUID del instructor" 
-              />
+              <label>Instructor</label>
+              <select
+                {...register('idInstructor', { required: 'El instructor es obligatorio para nuevas clases' })}
+                style={{
+                  ...getInputStyle(!!errors.idInstructor),
+                  backgroundColor: '#0f1115',
+                  color: '#fff',
+                  padding: '0.5rem',
+                  borderRadius: '0.375rem',
+                  border: '1px solid #2d323e',
+                }}
+              >
+                <option value="">Seleccione un instructor</option>
+                {(instructores ?? []).map((inst) => (
+                  <option key={inst.idUsuario} value={inst.idUsuario}>
+                    {`${inst.nombre ?? ''} ${inst.apellido ?? ''}`.trim() || inst.email}
+                  </option>
+                ))}
+              </select>
               {errors.idInstructor && <span style={errorTextStyle}>{errors.idInstructor.message}</span>}
             </div>
           )}

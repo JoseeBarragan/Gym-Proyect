@@ -27,7 +27,7 @@ model Membresia {
   fechaVencimiento DateTime        @db.Date
   estadoMembresia  EstadoMembresia
   idTipoMembresia  String          @db.Uuid
-  Usuario          Usuario         @relation(fields: [idSocio], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "idSocioFK")
+  Usuario          Usuario         @relation(fields: [idSocio], references: [idUsuario], onDelete: Cascade, onUpdate: NoAction, map: "idSocioFK")
   TipoMembresia    TipoMembresia   @relation(fields: [idTipoMembresia], references: [idTipoMembresia], onDelete: NoAction, onUpdate: NoAction, map: "idTMFK")
   Pago             Pago?
 }
@@ -49,7 +49,7 @@ model Reserva {
   fechaReserva  DateTime      @db.Date
   estadoReserva EstadoReserva
   Clase         Clase         @relation(fields: [idClase], references: [idClase], onDelete: NoAction, onUpdate: NoAction, map: "idClaseFK")
-  Usuario       Usuario       @relation(fields: [idSocio], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "idSocioFK")
+  Usuario       Usuario       @relation(fields: [idSocio], references: [idUsuario], onDelete: Cascade, onUpdate: NoAction, map: "idSocioFK")
 
   @@unique([idSocio, idClase, fechaReserva])
 }
@@ -63,7 +63,7 @@ model TipoMembresia {
 }
 
 model Usuario {
-  idUsuario   String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  idUsuario   String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid 
   email       String      @unique(map: "emailUC") @db.VarChar(50)
   contrasena  String      @db.VarChar(100)
   nombre      String      @db.VarChar(20)
@@ -73,6 +73,7 @@ model Usuario {
   Clase       Clase[]
   Membresia   Membresia[]
   Reserva     Reserva[]
+  
 }
 
 enum EstadoMembresia {

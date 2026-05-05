@@ -1,12 +1,13 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { GetProfileService } from './services/getProfile.service';
 import { GetAllUsersService } from './services/getAllUsers.service';
-import { CreateUserDto, TipoUsuario, UpdateUserDto } from './dto/user.dto';
+import { CreateInstructorDto, CreateUserDto, TipoUsuario, UpdateUserDto } from './dto/user.dto';
 import { UpdateUserService } from './services/updateUser.service';
 import { DeleteUserService } from './services/deleteUser.service';
 import { CreateInstructorService } from './services/createInstructor.service';
 import { Roles } from '../shared/decorators/RoleDecorator';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiConflictResponse, ApiForbiddenResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiTags, ApiUnauthorizedResponse, ApiCreatedResponse, ApiBody } from '@nestjs/swagger';
+import { GetInstructoresService } from './services/getInstructores.service';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -17,9 +18,35 @@ export class UsersController {
         private readonly getAllUsersService: GetAllUsersService,
         private readonly updateUserService: UpdateUserService,
         private readonly deleteUserService: DeleteUserService,
-        private readonly createInstructorService: CreateInstructorService
+        private readonly createInstructorService: CreateInstructorService,
+        private readonly getInstructoresService: GetInstructoresService
 
     ) {}
+
+    @Get("instructores")
+    @ApiOperation({ summary: 'Listar instructores', description: 'Lista todos los instructores.' })
+    @ApiOkResponse({
+        description: 'Listado de instructores',
+        schema: {
+            example: [
+                {
+                    idUsuario: 'f4a42766-c4e1-4c9b-a290-9b8562a3a3f2',
+                    email: 'instructor@gym.com',
+                    contrasena: '$2b$10$...',
+                    nombre: 'Carlos',
+                    apellido: 'Gomez',
+                    telefono: '1133445566',
+                    tipoUsuario: 'Instructor'
+                }
+            ]
+        }
+    })
+    @Roles("Administrador")
+    @ApiUnauthorizedResponse({ description: 'Token no proporcionado o invalido' })
+    @ApiForbiddenResponse({ description: 'No tenes permisos para esta accion' })
+    async getInstructores() {
+        return await this.getInstructoresService.execute();
+    }
 
     @Get("profile/:id")
     @ApiOperation({ summary: 'Obtener perfil por id', description: 'Devuelve la informacion de un usuario por id.' })
@@ -77,7 +104,7 @@ export class UsersController {
     @ApiNotFoundResponse({ description: 'Usuario no encontrado' })
     @ApiBadRequestResponse({ description: 'Error de validacion de datos de entrada' })
     @ApiUnauthorizedResponse({ description: 'Token no proporcionado o invalido' })
-    async updateProfile(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto){   
+    async updateProfile(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto){ 
         return await this.updateUserService.execute(id, updateUserDto);
     }
 
@@ -107,8 +134,8 @@ export class UsersController {
     @ApiBadRequestResponse({ description: 'Error de validacion de datos de entrada' })
     @ApiForbiddenResponse({ description: 'No tenes permisos para esta accion' })
     @ApiUnauthorizedResponse({ description: 'Token no proporcionado o invalido' })
-    async createInstructor(@Body() createUserDto: CreateUserDto) {
-        await this.createInstructorService.execute(createUserDto);
+    async createInstructor(@Body() createInstructorDto: CreateInstructorDto) {
+        await this.createInstructorService.execute(createInstructorDto);
         return;
     }
 }

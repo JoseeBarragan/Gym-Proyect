@@ -8,6 +8,7 @@ import { UpdateUserService } from './services/updateUser.service';
 import { PasswordService } from '../auth/services/Password.service';
 import { DeleteUserService } from './services/deleteUser.service';
 import { CreateInstructorService } from './services/createInstructor.service';
+import { GetInstructoresService } from './services/getInstructores.service';
 
 @Module({
   controllers: [UsersController],
@@ -18,6 +19,7 @@ import { CreateInstructorService } from './services/createInstructor.service';
       useClass: UsersRepository
     },
     GetProfileService,
+    GetInstructoresService,
     GetAllUsersService,
     UpdateUserService,
     PasswordService,

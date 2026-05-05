@@ -2,7 +2,7 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "barraganseba@gmail.com",
+    "email": "admin@gym.com",
     "contrasena": "12345678"
 }
 ###

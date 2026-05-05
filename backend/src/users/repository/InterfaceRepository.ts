@@ -9,4 +9,5 @@ export interface IUsersRepository {
     getProfile(id: string): Promise<Usuario | null>;
     updateUser(id: string, user: UpdateUserDto): Promise<Usuario>;
     deleteUser(id: string): Promise<void>;
+    getInstructores(): Promise<Usuario[]>;
 }

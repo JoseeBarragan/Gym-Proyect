@@ -1,6 +1,7 @@
 import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import { IPaymentRepository } from "./IPaymentRepository";
 import { PrismaService } from "../../prisma.service";
+import { Pago } from "@prisma/client";
 
 @Injectable()
 export class PaymentRepository implements IPaymentRepository {
@@ -23,6 +24,19 @@ export class PaymentRepository implements IPaymentRepository {
         }catch(err){
             console.log(err)
             throw new ServiceUnavailableException("Error al procesar el pago")
+        }
+    }
+
+    async getPayments(): Promise<Pago[]> {
+        try {
+            return await this.prisma.pago.findMany({
+                orderBy: {
+                    fechaPago: 'desc'
+                }
+            });
+        } catch (err) {
+            console.log(err)
+            throw new ServiceUnavailableException("Error al obtener los pagos")
         }
     }
 } 

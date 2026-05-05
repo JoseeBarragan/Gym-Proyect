@@ -1,6 +1,6 @@
 import { ConflictException, Inject, Injectable } from "@nestjs/common";
 import type { IUsersRepository } from "../repository/InterfaceRepository";
-import { CreateUserDto, TipoUsuario } from "../dto/user.dto";
+import { CreateInstructorDto, TipoUsuario } from "../dto/user.dto";
 import { PasswordService } from "../../auth/services/Password.service";
 
 
@@ -11,16 +11,16 @@ export class CreateInstructorService {
         private readonly passwordService: PasswordService,
     ){}
 
-    async execute(user: CreateUserDto): Promise<void> {
-        const isUser = await this.usersRepository.getByEmail(user.email);
+    async execute(instructor: CreateInstructorDto): Promise<void> {
+        const isUser = await this.usersRepository.getByEmail(instructor.email);
 
         if(isUser) {
             throw new ConflictException("El email ya está registrado");
         }
 
         const newUser = {
-            ...user,
-            contrasena: await this.passwordService.hash(user.contrasena),
+            ...instructor,
+            contrasena: await this.passwordService.hash(instructor.contrasena),
             tipoUsuario: TipoUsuario.INSTRUCTOR
         }
 
