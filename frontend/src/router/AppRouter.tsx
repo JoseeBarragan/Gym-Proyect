@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
+import { HomePage } from '../home/pages/HomePage';
 import LoginPage from '../login/pages/login';
 import { ProtectedRoute } from '../auth/ProtectedRoute';
 import { AdminLayout } from '../admin/layout/AdminLayout';
@@ -16,7 +17,8 @@ import { InstructorHistoryPage } from '../instructor/pages/InstructorHistoryPage
 export function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/home" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route
         path="/admin"

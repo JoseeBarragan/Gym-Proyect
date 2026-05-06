@@ -133,7 +133,6 @@
   border: 1px solid #2d323e;
   padding: 1.5rem;
   transition: all 0.2s ease;
-  cursor: pointer;
 }
 
 .instructor-class-card:hover {

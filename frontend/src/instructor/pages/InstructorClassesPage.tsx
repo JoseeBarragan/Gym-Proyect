@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useInstructorClasses } from '../features/useInstructor';
+import { useInstructorClasses, useClassReservations } from '../features/useInstructor';
 import { InstructorClassDetail } from './InstructorClassDetail';
 import { 
   Calendar, 
@@ -8,10 +8,11 @@ import {
   User
 } from 'lucide-react';
 import '../instructor.css';
+import type { ClaseItem } from '../../admin/features/clases/useClases';
 
 export function InstructorClassesPage() {
   const { data: clases, allClasses, isLoading, error } = useInstructorClasses();
-  const [selectedClass, setSelectedClass] = useState<{id: string; data: any} | null>(null);
+  const [selectedClass, setSelectedClass] = useState<{id: string; data: ClaseItem} | null>(null);
 
   if (selectedClass) {
     const claseData = allClasses?.find(c => c.idClase === selectedClass.id);
@@ -70,12 +71,14 @@ export function InstructorClassesPage() {
   );
 }
 
-function ClassCard({ clase, onSelect }: { 
-  clase: any; 
+function ClassCard({ clase, onSelect }: {
+  clase: ClaseItem;
   onSelect: () => void;
 }) {
-  const capacityPercentage = 75;
-  
+  const { students } = useClassReservations(clase.idClase);
+  const enrolledCount = students.length;
+  const capacityPercentage = (enrolledCount / (clase.cupo || 20)) * 100;
+
   const getCapacityClass = () => {
     if (capacityPercentage >= 90) return 'full';
     if (capacityPercentage >= 70) return 'warning';
@@ -116,10 +119,10 @@ function ClassCard({ clase, onSelect }: {
           className={`instructor-capacity-fill ${getCapacityClass()}`}
           style={{ width: `${capacityPercentage}%` }}
         />
-        <div className="instructor-capacity-text">
-          <span>Cupo: {clase.cupo}</span>
-          <span>{capacityPercentage}% ocupado</span>
-        </div>
+<div className="instructor-capacity-text">
+  <span>{enrolledCount} estudiantes inscritos</span>
+  <span>{capacityPercentage.toFixed(0)}% capacidad</span>
+</div>
       </div>
 
       <button className="instructor-attendace-btn">

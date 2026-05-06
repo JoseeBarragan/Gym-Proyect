@@ -4,6 +4,7 @@ import {
   User as UserIcon
 } from 'lucide-react';
 import '../instructor.css';
+import type { ClaseItem } from '../../admin/features/clases/useClases';
 
 export function InstructorStudentsPage() {
   const { data: clases } = useInstructorClasses();
@@ -37,7 +38,7 @@ export function InstructorStudentsPage() {
   );
 }
 
-function StudentsByClass({ clase }: { clase: any }) {
+function StudentsByClass({ clase }: { clase: ClaseItem }) {
   const { students, isLoading } = useClassReservations(clase.idClase);
 
   if (isLoading) {

@@ -5,6 +5,7 @@ import {
   User
 } from 'lucide-react';
 import '../instructor.css';
+import type { ClaseItem } from '../../admin/features/clases/useClases';
 
 export function InstructorHistoryPage() {
   const { data: clases } = useInstructorClasses();
@@ -38,7 +39,7 @@ export function InstructorHistoryPage() {
   );
 }
 
-function ClassHistoryRow({ clase }: { clase: any }) {
+function ClassHistoryRow({ clase }: { clase: ClaseItem }) {
   const { data: reservations } = useClassReservations(clase.idClase);
 
   const present = reservations?.filter(r => r.asistencia === true).length || 0;

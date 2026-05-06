@@ -14,11 +14,12 @@ import {
   User
 } from 'lucide-react';
 import '../instructor.css';
+import type { ClaseItem } from '../../admin/features/clases/useClases';
 
 export function InstructorClassDetail({ claseId, onBack, claseData }: { 
   claseId: string; 
   onBack: () => void;
-  claseData?: any;
+  claseData?: ClaseItem;
 }) {
   const { students, isLoading } = useClassReservations(claseId);
   const updateAttendance = useUpdateReservationAttendance();
