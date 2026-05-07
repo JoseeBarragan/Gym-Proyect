@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import { PrismaService } from "../../prisma.service";
 import { ITypeMembershipRepository } from "./ITypeMemRepository";
 
@@ -18,7 +18,16 @@ export class TypeMembershipRepository implements ITypeMembershipRepository {
             return typeMembership
         } catch (error) {
             console.log(error)
-            throw new Error("Error while fetching type membership by id");
+            throw new ServiceUnavailableException("Error while fetching type membership by id");
+        }
+    }
+
+    async getAllTypeMembership() {
+        try {
+            return await this.prisma.tipoMembresia.findMany()
+        } catch (error) {
+            console.log(error)
+            throw new ServiceUnavailableException("Error while fetching all type memberships");
         }
     }
 }

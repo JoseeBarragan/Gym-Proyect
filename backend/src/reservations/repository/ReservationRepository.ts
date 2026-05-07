@@ -50,7 +50,17 @@ export class ReservationRepository implements IReservationsRepository {
     async getClaseReservations(idClase: string): Promise<Reserva[]> {
         try {
             return await this.prisma.reserva.findMany({
-                where: { idClase, estadoReserva: "Reservada" }
+                where: { idClase, estadoReserva: "Reservada" },
+                include: {
+                    Usuario: {
+                        select: {
+                            idUsuario: true,
+                            nombre: true,
+                            apellido: true,
+                            email: true,      
+                        }
+                    }
+                }
             })
         } catch (err) {
             throw new ServiceUnavailableException('Error al obtener las reservas: ' + err);
