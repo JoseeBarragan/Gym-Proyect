@@ -13,6 +13,7 @@ import { InstructorLayout } from '../instructor/layout/InstructorLayout';
 import { InstructorClassesPage } from '../instructor/pages/InstructorClassesPage';
 import { InstructorStudentsPage } from '../instructor/pages/InstructorStudentsPage';
 import { InstructorHistoryPage } from '../instructor/pages/InstructorHistoryPage';
+import { SocioLayout, SocioClassesPage, SocioReservasPage, SocioMembresiasPage } from '../socio';
 
 export function AppRouter() {
   return (
@@ -45,6 +46,18 @@ export function AppRouter() {
         <Route index element={<InstructorClassesPage />} />
         <Route path="students" element={<InstructorStudentsPage />} />
         <Route path="history" element={<InstructorHistoryPage />} />
+      </Route>
+      <Route
+        path="/socio"
+        element={
+          <ProtectedRoute requiredRole="Socio">
+            <SocioLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<SocioClassesPage />} />
+        <Route path="reservas" element={<SocioReservasPage />} />
+        <Route path="membresias" element={<SocioMembresiasPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>

@@ -3,6 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import gymImage from '../../../assets/gymPicture.png';
 import '../../home/home.css';
+import { Header } from '../components/Header';
+import { AuroraBackground } from '../components/AuroraBackground';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -123,16 +125,15 @@ function HeroSection() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
       style={{
         backgroundImage: `url(${gymImage})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
     >
-      <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/50 to-black/70" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]" />
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+      <div className="absolute inset-0 bg-black/60" />
+      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto pt-16">
         <h1
           ref={titleRef}
           className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-4 md:mb-6 tracking-tight"
@@ -224,19 +225,20 @@ function FeaturesSection() {
   ];
 
   return (
-    <section ref={sectionRef} className="py-16 md:py-24 bg-[#0a0a0a] px-4">
-      <div className="max-w-6xl mx-auto">
+    <section ref={sectionRef} className="py-16 md:py-24 bg-[#0a0a0a] px-4 relative overflow-hidden">
+      <AuroraBackground />
+      <div className="relative z-10 max-w-6xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
           ¿Por qué elegirnos?
         </h2>
-        <div className="w-24 h-1 bg-linear-to-r from-blue-600 to-cyan-600 mx-auto mb-12 rounded-full" />
+        <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-cyan-600 mx-auto mb-12 rounded-full" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {features.map((feature, index) => (
             <div
               key={index}
               className={`feature-card group bg-[#111111]/80 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-gray-800 hover:border-blue-600 transition-all duration-500 overflow-hidden relative`}
             >
-              <div className={`absolute inset-0 bg-linear-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
               <div className="relative z-10">
                 <div className="text-4xl md:text-5xl mb-4 transform group-hover:scale-110 transition-transform duration-300">{feature.icon}</div>
                 <h3 className="text-xl md:text-2xl font-semibold text-white mb-3">
@@ -561,12 +563,22 @@ function FooterSection() {
 export function HomePage() {
   return (
     <div className="gym-home-page bg-[#0a0a0a] min-h-screen">
-      <HeroSection />
-      <FeaturesSection />
-      <div id="membresias" />
-      <MembershipsSection />
-      <ClassesSection />
-      <TestimonialsSection />
+      <Header />
+      <div id="hero">
+        <HeroSection />
+      </div>
+      <div id="features">
+        <FeaturesSection />
+      </div>
+      <div id="membresias">
+        <MembershipsSection />
+      </div>
+      <div id="clases">
+        <ClassesSection />
+      </div>
+      <div id="testimonios">
+        <TestimonialsSection />
+      </div>
       <FooterSection />
     </div>
   );

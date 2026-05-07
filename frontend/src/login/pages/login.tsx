@@ -47,7 +47,7 @@ export default function LoginPage() {
             navigate('/instructor');
           }
           else if (user.tipoUsuario === 'Socio') {
-            navigate('/socio');
+            navigate('/home');
           }
           else {
             navigate('/login');
