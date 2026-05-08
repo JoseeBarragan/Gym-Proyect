@@ -77,50 +77,50 @@ export function SocioReservasPage() {
           <p className="text-gray-400 text-lg">No tienes reservas registradas</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {filteredReservations.map((reserva: any) => (
-            <div
-              key={reserva.idReserva}
-              className="bg-[#111111] rounded-2xl border border-gray-800 p-6 hover:border-gray-700 transition-colors"
-            >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-3">
-                    <h3 className="text-xl font-bold text-white">
-                      {getClaseName(reserva.idClase)}
-                    </h3>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                        reserva.estadoReserva
-                      )}`}
-                    >
-                      {reserva.estadoReserva}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-6 text-gray-400">
-                  <div className="flex items-center gap-2">
-                    <Calendar size={18} />
-                    <span className="text-sm">
-                      {new Date(reserva.fechaReserva).toLocaleDateString()}
-                    </span>
-                  </div>
-                  {reserva.estadoReserva === 'Reservada' && (
-                    <button
-                      onClick={() =>
-                        handleCancel(reserva.idReserva, getClaseName(reserva.idClase))
-                      }
-                      className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-500 rounded-lg text-sm font-medium transition-colors"
-                    >
-                      Cancelar
-                    </button>
-                  )}
-                </div>
+    <div className="space-y-4">
+      {filteredReservations.map((reserva: any) => (
+        <div
+          key={reserva.idReserva}
+          className="bg-[#111111] rounded-2xl border border-gray-800 p-6 hover:border-gray-700 transition-colors"
+        >
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-3">
+                <h3 className="text-xl font-bold text-white">
+                  {getClaseName(reserva.idClase)}
+                </h3>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                    reserva.estadoReserva
+                  )}`}
+                >
+                  {reserva.estadoReserva}
+                </span>
               </div>
             </div>
-          ))}
+
+            <div className="flex items-center gap-6 text-gray-400">
+              <div className="flex items-center gap-2">
+                <Calendar size={18} />
+                <span className="text-sm">
+                  {new Date(reserva.fechaReserva).toLocaleDateString()}
+                </span>
+              </div>
+              {reserva.estadoReserva === 'Reservada' && (
+                <button
+                  onClick={() =>
+                    handleCancel(reserva.idReserva, getClaseName(reserva.idClase))
+                  }
+                  className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-500 rounded-lg text-sm font-medium transition-colors"
+                >
+                  Cancelar
+                </button>
+              )}
+            </div>
+          </div>
         </div>
+      ))}
+    </div>
       )}
 
       {showModal && selectedReserva && (

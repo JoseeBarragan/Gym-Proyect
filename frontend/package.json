@@ -17,6 +17,7 @@
     "jwt-decode": "^4.0.0",
     "lucide-react": "^1.12.0",
     "react": "^19.2.5",
+    "react-bits": "^1.0.5",
     "react-dom": "^19.2.5",
     "react-hook-form": "^7.74.0",
     "react-router-dom": "^7.14.2",

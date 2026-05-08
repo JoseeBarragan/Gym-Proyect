@@ -17,7 +17,7 @@ const socioNavItems = [
   { name: 'Membresías', href: '/socio/membresias', icon: CreditCard },
 ];
 
-type SNavitem = typeof socioNavItems[0]
+type SNavItem = typeof socioNavItems[0];
 
 const Logo = () => (
   <div className="flex items-center gap-2">
@@ -33,13 +33,18 @@ const Logo = () => (
   </div>
 );
 
-export function Header() {
+interface HeaderProps {
+  variant?: 'home' | 'socio';
+}
+
+export function Header({ variant = 'home' }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, isAuthenticated } = useAuth();
 
-  const isSocioRoute = location.pathname.startsWith('/socio');
+  const isSocioRoute = variant === 'socio' || location.pathname.startsWith('/socio');
+  const currentNavItems = isSocioRoute ? socioNavItems : homeNavItems;
 
   const handleSocioAccess = () => {
     if (isAuthenticated && user?.tipoUsuario === 'Socio') {
@@ -70,30 +75,19 @@ export function Header() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-6" style={{ mixBlendMode: 'difference' }}>
-              {isSocioRoute ? (
-                socioNavItems.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="flex items-center gap-2 text-sm font-medium transition-all duration-300 hover:scale-110 hover:text-blue-500 text-white"
-                    style={{ color: 'white' }}
-                  >
+              {currentNavItems.map((item: any) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="flex items-center gap-2 text-sm font-medium transition-all duration-300 hover:scale-110 hover:text-blue-500 text-white"
+                  style={{ color: 'white' }}
+                >
+                  {'icon' in item && item.icon ? (
                     <item.icon size={18} />
-                    {item.name}
-                  </a>
-                ))
-              ) : (
-                homeNavItems.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="text-sm font-medium transition-all duration-300 hover:scale-110 hover:text-blue-500 text-white"
-                    style={{ color: 'white' }}
-                  >
-                    {item.name}
-                  </a>
-                ))
-              )}
+                  ) : null}
+                  {item.name}
+                </a>
+              ))}
             </nav>
 
             {/* Profile & Socio Access Buttons (Desktop) */}
@@ -174,19 +168,19 @@ export function Header() {
               <X size={24} />
             </button>
           </div>
-          
-        <nav className="flex-1 p-4">
-          {homeNavItems.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block py-3 px-4 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg mb-2 transition-colors"
-            >
-              {item.name}
-            </a>
-          ))}
-        </nav>
+
+          <nav className="flex-1 p-4">
+            {currentNavItems.map((item: any) => (
+              <a
+                key={item.name}
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-3 px-4 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg mb-2 transition-colors"
+              >
+                {item.name}
+              </a>
+            ))}
+          </nav>
 
           <div className="p-4 border-t border-gray-800 space-y-3">
             {isAuthenticated && user?.tipoUsuario === 'Socio' ? (
@@ -194,7 +188,7 @@ export function Header() {
                 <div className="text-white text-sm mb-2">
                   {user?.nombre} {user?.apellido}
                 </div>
-                {socioNavItems.map((item: SNavitem) => (
+                {socioNavItems.map((item: SNavItem) => (
                   <a
                     key={item.name}
                     href={item.href}

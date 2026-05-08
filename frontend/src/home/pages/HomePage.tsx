@@ -563,7 +563,7 @@ function FooterSection() {
 export function HomePage() {
   return (
     <div className="gym-home-page bg-[#0a0a0a] min-h-screen">
-      <Header />
+      <Header variant='socio'/>
       <div id="hero">
         <HeroSection />
       </div>
