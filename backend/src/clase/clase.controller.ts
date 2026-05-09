@@ -7,6 +7,7 @@ import { CreateClaseService } from "./services/CreateClase.service";
 import { UpdateClaseService } from "./services/UpdateClase.service";
 import { DeleteClaseService } from "./services/DeleteClase.service";
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiForbiddenResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags, ApiUnauthorizedResponse, ApiBody, ApiInternalServerErrorResponse } from "@nestjs/swagger";
+import { Public } from "../shared/decorators/PublicDecorator";
 
 
 @ApiTags('Clase')
@@ -22,7 +23,7 @@ export class ClaseController {
     ) {}
 
     @Get("")
-    @Roles("Administrador", "Instructor")
+    @Public()
     @ApiOperation({ summary: 'Listar clases', description: 'Devuelve todas las clases del sistema.' })
     @ApiOkResponse({
         description: 'Listado de clases',
