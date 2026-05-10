@@ -5,8 +5,7 @@ import { useState } from 'react';
 
 export function SocioReservasPage() {
   const { user } = useAuth();
-  const [userId] = useState<string>(user?.email?.split('@')[0] || '');
-  const { data: reservations, isLoading, error, refetch } = useUserReservations(userId);
+  const { data: reservations, isLoading, error, refetch } = useUserReservations(user?.email);
   const { data: clases } = useClases();
   const cancelReservation = useCancelReservation();
   const [selectedReserva, setSelectedReserva] = useState<{ id: string; nombre: string } | null>(null);

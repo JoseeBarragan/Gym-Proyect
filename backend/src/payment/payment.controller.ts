@@ -54,7 +54,7 @@ export class PaymentController {
   @ApiUnauthorizedResponse({ description: 'Token no proporcionado o invalido' })
   @ApiInternalServerErrorResponse({ description: 'Error inesperado con Stripe o backend' })
   async createPayment(@Body() body: CreatePaymentRequestDto) {
-    return await this.createPaymentService.execute(body.idSocio, body.idTipoMembresia);
+    return await this.createPaymentService.execute(body.email, body.idTipoMembresia);
   }
 
   @Public()

@@ -10,12 +10,17 @@ import { RegisterPaymentService } from './services/RegisterPayment.service';
 import { MembershipRepository } from '../membership/repository/MembershipRepository';
 import { HandleWebHookService } from './services/handleWebHook.service';
 import { GetPaymentsService } from './services/getPayments.service';
+import { UsersRepository } from '../users/repository/UsersRepository';
 
 @Module({
   controllers: [PaymentController],
   providers: [
     CreatePaymentService,
     GetPaymentsService,
+    {
+      provide: "UsersRepository",
+      useClass: UsersRepository
+    },
     {
       provide: "IPaymentRepository",
       useClass: PaymentRepository

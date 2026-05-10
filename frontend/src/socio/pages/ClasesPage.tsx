@@ -19,11 +19,9 @@ export function SocioClassesPage() {
   const confirmReservation = () => {
     if (!selectedClass || !user?.email) return;
 
-    const today = new Date();
     createReservation.mutate({
-      idUsuario: user.email.split('@')[0], // TODO: Get actual user ID from JWT
+      email: user.email, // TODO: Get actual user ID from JWT
       idClase: selectedClass.id,
-      fechaReserva: today.toISOString(),
     });
 
     setShowModal(false);

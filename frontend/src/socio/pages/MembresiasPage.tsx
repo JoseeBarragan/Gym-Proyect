@@ -18,44 +18,31 @@ export function SocioMembresiasPage() {
     price: number;
   } | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [paymentMode, setPaymentMode] = useState<'stripe' | 'direct'>('stripe');
 
   const handlePayment = (
     id: string,
     name: string,
     price: number,
-    mode: 'stripe' | 'direct'
   ) => {
     setSelectedMembership({ id, name, price });
-    setPaymentMode(mode);
     setShowModal(true);
   };
 
   const confirmPayment = () => {
     if (!selectedMembership || !user?.email) return;
 
-    const userId = user.email.split('@')[0]; // TODO: Get actual user ID from JWT
+    createPayment.mutate({
+      email: user.email,
+      idTipoMembresia: selectedMembership.id,
+    });
 
-    if (paymentMode === 'stripe') {
-      // Create Stripe payment session
-      createPayment.mutate({
-        idSocio: userId,
-        idTipoMembresia: selectedMembership.id,
-      });
-    } else {
-      // Direct assignment
-      assignMembership.mutate({
-        idSocio: userId,
-        idTipoMembresia: selectedMembership.id,
-      });
-    }
 
     setShowModal(false);
   };
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-100">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
       </div>
     );
@@ -96,7 +83,7 @@ export function SocioMembresiasPage() {
               <p className="text-gray-400 text-sm mb-4">{membership.descripcion}</p>
 
               <div className="mb-6">
-                <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                <div className="text-4xl font-bold bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                   ${membership.precio}
                 </div>
                 <div className="text-gray-500 text-sm">
@@ -120,25 +107,11 @@ export function SocioMembresiasPage() {
                       membership.idTipoMembresia,
                       membership.nombre,
                       membership.precio,
-                      'stripe'
                     )
                   }
                   className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors duration-300"
                 >
                   Pagar con Stripe
-                </button>
-                <button
-                  onClick={() =>
-                    handlePayment(
-                      membership.idTipoMembresia,
-                      membership.nombre,
-                      membership.precio,
-                      'direct'
-                    )
-                  }
-                  className="w-full py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-medium transition-colors duration-300"
-                >
-                  Asignar Directamente
                 </button>
               </div>
             </div>
@@ -162,14 +135,14 @@ export function SocioMembresiasPage() {
             </button>
 
             <h2 className="text-2xl font-bold text-white mb-2">
-              {paymentMode === 'stripe' ? 'Confirmar Pago' : 'Confirmar Asignación'}
+              {'Confirmar Pago'}
             </h2>
             <p className="text-gray-400 mb-6">
-              {paymentMode === 'stripe'
-                ? `Vas a pagar la membresía `
-                : `Vas a asignar la membresía `}
+              {
+               `Vas a pagar la membresía `
+              }
               <span className="text-blue-500">{selectedMembership.name}</span>
-              {paymentMode === 'stripe' ? ` por $${selectedMembership.price}` : ''}.
+              {` por $${selectedMembership.price}`}.
             </p>
 
             <div className="flex gap-3">
@@ -186,13 +159,11 @@ export function SocioMembresiasPage() {
                 }
                 className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 text-white rounded-xl font-medium transition-colors"
               >
-                {paymentMode === 'stripe'
-                  ? createPayment.isPending
+                {
+                  createPayment.isPending
                     ? 'Procesando...'
                     : 'Pagar'
-                  : assignMembership.isPending
-                  ? 'Asignando...'
-                  : 'Confirmar'}
+                }
               </button>
             </div>
           </div>

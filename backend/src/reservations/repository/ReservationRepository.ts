@@ -9,13 +9,12 @@ export class ReservationRepository implements IReservationsRepository {
     constructor(
         private readonly prisma: PrismaService
     ) {}
-    async create(reservationData: CreateResDto): Promise<void> {
+    async create(idSocio: string, reservationData: CreateResDto): Promise<void> {
         try {
             await this.prisma.reserva.create({
                 data: {
-                    idSocio: reservationData.idUsuario,
+                    idSocio,
                     idClase: reservationData.idClase,
-                    fechaReserva: reservationData.fechaReserva,
                     estadoReserva: "Reservada"
                 }
             })
@@ -67,10 +66,10 @@ export class ReservationRepository implements IReservationsRepository {
         }
     }
 
-  async getReservationForAClase(idClase: string, fechaReserva: Date): Promise<number> {
+  async getReservationForAClase(idClase: string): Promise<number> {
     try {
       return await this.prisma.reserva.count({
-        where: { idClase, fechaReserva, estadoReserva: "Reservada" }
+        where: { idClase, estadoReserva: "Reservada" }
       })
     } catch (err) {
       throw new ServiceUnavailableException('Error al obtener las reservas: ' + err);

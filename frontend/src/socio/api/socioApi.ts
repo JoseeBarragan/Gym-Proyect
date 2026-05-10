@@ -56,9 +56,8 @@ export async function getClaseById(id: string) {
  * Creates a reservation for a class
  */
 export interface CreateReservationBody {
-  idUsuario: string;
+  email: string;
   idClase: string;
-  fechaReserva: string; // ISO date
 }
 
 export async function createReservation(data: CreateReservationBody) {
@@ -84,8 +83,8 @@ export async function cancelReservation(id: string) {
  * Roles: Socio
  * Gets all reservations for a user
  */
-export async function getUserReservations(userId: string) {
-  return fetchWithAuth(`/reservations/${userId}`);
+export async function getUserReservations(email: string) {
+  return fetchWithAuth(`/reservations/${email}`);
 }
 
 /**
@@ -132,7 +131,7 @@ export async function assignMembership(data: AssignMembershipBody) {
  * Creates a payment session and returns checkout URL
  */
 export interface CreatePaymentBody {
-  idSocio: string;
+  email: string;
   idTipoMembresia: string;
 }
 

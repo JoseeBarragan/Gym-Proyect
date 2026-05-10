@@ -61,10 +61,10 @@ export class ReservationsController {
     return { message: 'Reserva eliminada exitosamente' };
   }
 
-  @Get("/:id")
+  @Get("/:email")
   @Roles("Socio")
   @ApiOperation({ summary: 'Listar reservas por socio', description: 'Obtiene todas las reservas de un socio.' })
-  @ApiParam({ name: 'id', example: 'f4a42766-c4e1-4c9b-a290-9b8562a3a3f2' })
+  @ApiParam({ name: 'email', example: 'john.doe@example.com' })
   @ApiOkResponse({
     description: 'Reservas del socio',
     schema: {
@@ -81,8 +81,8 @@ export class ReservationsController {
   })
   @ApiForbiddenResponse({ description: 'No tenes permisos para esta accion' })
   @ApiUnauthorizedResponse({ description: 'Token no proporcionado o invalido' })
-  async getReservationsBySocio(@Param("id") id: string) {
-    return await this.getSocioReservationsService.execute(id);
+  async getReservationsBySocio(@Param("email") email: string) {
+    return await this.getSocioReservationsService.execute(email);
   }
 
   @Get("clase/:idClase")

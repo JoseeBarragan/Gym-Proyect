@@ -1,15 +1,22 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { StripeService } from '../../stripe.service';
 import type { ITypeMembershipRepository } from '../../typeMembership/Repository/ITypeMemRepository';
+import type { IUsersRepository } from '../../users/repository/InterfaceRepository';
 
 @Injectable()
 export class CreatePaymentService {
     constructor(
         @Inject("TypeMembershipRepository") private readonly typeMembershipRepository: ITypeMembershipRepository,
-        private readonly stripeService: StripeService
+        private readonly stripeService: StripeService,
+        @Inject("UsersRepository") private readonly usersRepository: IUsersRepository
     ) {}
 
-    async execute(idSocio: string, idTypeMembership: string): Promise<string> {
+    async execute(email: string, idTypeMembership: string): Promise<string> {
+        const user = await this.usersRepository.getByEmail(email);
+
+        if (!user) {
+            throw new NotFoundException("Usuario no encontrado");
+        }
 
         const typeMembership = await this.typeMembershipRepository.getTypeMembershipById(idTypeMembership);
 
@@ -35,7 +42,7 @@ export class CreatePaymentService {
             success_url: "http://localhost:3000/payment/success",
             cancel_url: "http://localhost:3000/payment/cancel",
             metadata: {
-                idSocio,
+                idSocio: user.idUsuario,
                 idTypeMembership,
             },
         })
@@ -44,6 +51,6 @@ export class CreatePaymentService {
             throw new NotFoundException("Error al crear la sesión de pago");
         }
 
-        return session.url
+        return JSON.stringify(session.url)
     }
 }

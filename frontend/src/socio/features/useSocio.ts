@@ -154,8 +154,8 @@ export function useCreatePayment() {
     mutationFn: (data: CreatePaymentBody) => createPayment(data),
     onSuccess: (response) => {
       // Redirect to Stripe checkout URL
-      if (response.url) {
-        window.location.href = response.url;
+      if (response) {
+        window.location.href = response;
       }
     },
     onError: (error: Error) => {

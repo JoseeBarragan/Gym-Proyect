@@ -9,6 +9,7 @@ import { GetClaseReservationsService } from './services/getClaseReservations.ser
 import { UpdateReservationAttendanceService } from './services/updateReservationAttendance.service';
 import { MembershipRepository } from '../membership/repository/MembershipRepository';
 import { ClaseRepository } from '../clase/repository/ClasesRepository';
+import { UsersRepository } from '../users/repository/UsersRepository';
 @Module({
   controllers: [ReservationsController],
   providers: [
@@ -17,6 +18,14 @@ import { ClaseRepository } from '../clase/repository/ClasesRepository';
     GetSocioReservationsService,
     GetClaseReservationsService,
     UpdateReservationAttendanceService,
+    {
+      provide: "UsersRepository",
+      useClass: UsersRepository
+    },
+    {
+      provide: "UsersRepository",
+      useClass: UsersRepository
+    },
     {
       provide: "ClasesRepository",
       useClass: ClaseRepository
