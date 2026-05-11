@@ -30,17 +30,17 @@ export class CreatePaymentService {
             line_items: [
                 {
                     price_data: {
-                        currency: "ars",
+                        currency: "usd",
                         unit_amount: typeMembership.precio * 100, // Stripe maneja centavos
                         product_data: {
                             name: "Plan " + typeMembership.nombre,
                         },
                     },
                     quantity: 1,
-                },
+                }, 
             ],
-            success_url: "http://localhost:3000/payment/success",
-            cancel_url: "http://localhost:3000/payment/cancel",
+            success_url: `${process.env.CORS_ORIGIN}/payment/success`,
+            cancel_url: `${process.env.CORS_ORIGIN}/payment/cancel`,
             metadata: {
                 idSocio: user.idUsuario,
                 idTypeMembership,

@@ -26,9 +26,8 @@ export class ReservationRepository implements IReservationsRepository {
 
     async delete(id: string): Promise<void> {
         try {
-            await this.prisma.reserva.update({
-                where: { idReserva: id },
-                data: { estadoReserva: "Cancelada" }
+            await this.prisma.reserva.delete({
+                where: { idReserva: id }
             })
             return
         } catch (err) {

@@ -41,7 +41,7 @@ export function Header({ variant = 'home' }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const isSocioRoute = variant === 'socio' || location.pathname.startsWith('/socio');
   const currentNavItems = isSocioRoute ? socioNavItems : homeNavItems;
@@ -54,6 +54,11 @@ export function Header({ variant = 'home' }: HeaderProps) {
     } else {
       navigate('/login');
     }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
   };
 
   return (
@@ -93,14 +98,7 @@ export function Header({ variant = 'home' }: HeaderProps) {
             {/* Profile & Socio Access Buttons (Desktop) */}
             <div className="hidden md:flex items-center gap-4">
               {isAuthenticated && user?.tipoUsuario === 'Socio' ? (
-                <button
-                  onClick={() => navigate('/socio')}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 bg-gradient-to-r from-blue-600 to-cyan-600 text-white"
-                  style={{ mixBlendMode: 'normal' }}
-                >
-                  <Dumbbell className="w-4 h-4" />
-                  <span>Mi Área</span>
-                </button>
+                <></>
               ) : (
                 <button
                   onClick={handleSocioAccess}
@@ -111,16 +109,40 @@ export function Header({ variant = 'home' }: HeaderProps) {
                   <span>Área Socio</span>
                 </button>
               )}
-              <button
-                onClick={() => navigate('/login')}
-                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105"
-                style={{ mixBlendMode: 'difference' }}
-              >
-                <div className="text-white flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  <span>Acceder</span>
-                </div>
-              </button>
+              {isAuthenticated ? (
+                <>
+                  <button
+                    onClick={() => navigate('/profile')}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105"
+                    style={{ mixBlendMode: 'difference' }}
+                  >
+                    <div className="text-white flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      <span>{user?.nombre} {user?.apellido}</span>
+                    </div>
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105"
+                    style={{ mixBlendMode: 'difference' }}
+                  >
+                    <div className="text-white flex items-center gap-2">
+                      <span>Cerrar sesion</span>
+                    </div>
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => navigate('/login')}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105"
+                  style={{ mixBlendMode: 'difference' }}
+                >
+                  <div className="text-white flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    <span>Acceder</span>
+                  </div>
+                </button>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -209,13 +231,22 @@ export function Header({ variant = 'home' }: HeaderProps) {
                 <span>Área Socio</span>
               </button>
             )}
-            <button
-              onClick={() => navigate('/login')}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-gray-800 text-white font-medium hover:bg-gray-700 transition-colors"
-            >
-              <User className="w-5 h-5" />
-              <span>Acceder</span>
-            </button>
+            {isAuthenticated ? (
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-gray-800 text-white font-medium hover:bg-gray-700 transition-colors"
+              >
+                <span>Cerrar sesion</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate('/login')}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-gray-800 text-white font-medium hover:bg-gray-700 transition-colors"
+              >
+                <User className="w-5 h-5" />
+                <span>Acceder</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

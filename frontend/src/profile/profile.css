@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+.profile-page {
+  --profile-bg: #0b0f14;
+  --profile-card: rgba(15, 23, 42, 0.85);
+  --profile-border: rgba(148, 163, 184, 0.2);
+  --profile-text: #e5e7eb;
+  --profile-muted: #94a3b8;
+  --profile-accent: #22d3ee;
+  --profile-accent-strong: #0891b2;
+  --profile-warm: #f59e0b;
+  font-family: "Space Grotesk", sans-serif;
+  background-color: var(--profile-bg);
+  color: var(--profile-text);
+}
+
+.profile-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(34, 211, 238, 0.2), transparent 60%),
+    radial-gradient(900px 500px at 90% 10%, rgba(245, 158, 11, 0.18), transparent 55%),
+    linear-gradient(180deg, #0b0f14 0%, #0b111b 45%, #0a0f16 100%);
+}
+
+.profile-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at 60% 20%, rgba(0, 0, 0, 0.7), transparent 70%);
+  pointer-events: none;
+}
+
+.profile-card {
+  background: var(--profile-card);
+  border: 1px solid var(--profile-border);
+  border-radius: 24px;
+  box-shadow: 0 30px 80px rgba(2, 6, 23, 0.45);
+  backdrop-filter: blur(18px);
+}
+
+.profile-chip {
+  background: rgba(34, 211, 238, 0.14);
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  color: var(--profile-accent);
+}
+
+.profile-field {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: var(--profile-text);
+}
+
+.profile-field:focus {
+  outline: none;
+  border-color: var(--profile-accent);
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
+}
+
+.profile-cta {
+  background: linear-gradient(120deg, var(--profile-accent), var(--profile-accent-strong));
+  color: #07141c;
+}
+
+.profile-cta:hover {
+  filter: brightness(1.05);
+}
+
+.profile-warm {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}
+
+.profile-soft {
+  color: var(--profile-muted);
+}
+
+.profile-divider {
+  border-color: rgba(148, 163, 184, 0.2);
+}

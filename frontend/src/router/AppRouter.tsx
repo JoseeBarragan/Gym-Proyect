@@ -14,6 +14,9 @@ import { InstructorClassesPage } from '../instructor/pages/InstructorClassesPage
 import { InstructorStudentsPage } from '../instructor/pages/InstructorStudentsPage';
 import { InstructorHistoryPage } from '../instructor/pages/InstructorHistoryPage';
 import { SocioLayout, SocioClassesPage, SocioReservasPage, SocioMembresiasPage } from '../socio';
+import { ProfilePage } from '../profile/pages/ProfilePage';
+import { PaymentSuccessPage } from '../pages/payment/SuccessPage';
+import { PaymentCancelPage } from '../pages/payment/CancelPage';
 
 export function AppRouter() {
   return (
@@ -59,7 +62,17 @@ export function AppRouter() {
         <Route path="reservas" element={<SocioReservasPage />} />
         <Route path="membresias" element={<SocioMembresiasPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/login" replace />} />
+<Route
+ path="/profile"
+ element={
+ <ProtectedRoute>
+ <ProfilePage />
+ </ProtectedRoute>
+ }
+ />
+<Route path="/payment/success" element={<PaymentSuccessPage />} />
+<Route path="/payment/cancel" element={<PaymentCancelPage />} />
+<Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }

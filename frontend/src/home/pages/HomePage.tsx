@@ -1,43 +1,16 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import gymImage from '../../../assets/gymPicture.png';
 import '../../home/home.css';
 import { Header } from '../components/Header';
 import { AuroraBackground } from '../components/AuroraBackground';
+import { useMembershipTypes } from '../hooks/useMembershipTypes';
+import { useClases } from '../hooks/useClases';
 
 gsap.registerPlugin(ScrollTrigger);
 
 gsap.defaults({ ease: 'power3.out' });
-
-const memberships = [
-  {
-    name: 'Básico',
-    price: '29.99',
-    features: ['Acceso a gym', 'Horario limitado', 'Casilleros básicos'],
-    cta: 'Elegir Básico',
-  },
-  {
-    name: 'Pro',
-    price: '49.99',
-    features: ['Acceso 24/7', 'Clases grupales', 'Entrenador personal', 'Toallas incluidas'],
-    cta: 'Elegir Pro',
-    popular: true,
-  },
-  {
-    name: 'Premium',
-    price: '79.99',
-    features: ['Todo incluido', 'Nutricionista', 'Spa y sauna', 'Estacionamiento'],
-    cta: 'Elegir Premium',
-  },
-];
-
-const classes = [
-  { name: 'Spinning', time: 'Lun - Mie - Vie | 18:00', instructor: 'Carlos R.' },
-  { name: 'Yoga', time: 'Mar - Jue | 07:00', instructor: 'Ana M.' },
-  { name: 'Funcional', time: 'Lun - Mie - Vie | 07:00', instructor: 'Pedro S.' },
-  { name: 'Boxeo', time: 'Mar - Jue | 19:00', instructor: 'Lucía F.' },
-];
 
 const testimonials = [
   {
@@ -256,6 +229,22 @@ function FeaturesSection() {
 
 function MembershipsSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const { data: membershipTypes, isLoading, error } = useMembershipTypes();
+
+  const getFeaturesFromDescription = (nombre: string) => {
+    const baseFeatures: Record<string, string[]> = {
+      'basico': ['Acceso a gym', 'Horario limitado', 'Casilleros básicos'],
+      'pro': ['Acceso 24/7', 'Clases grupales', 'Entrenador personal', 'Toallas incluidas'],
+      'premium': ['Todo incluido', 'Nutricionista', 'Spa y sauna', 'Estacionamiento'],
+    };
+    
+    const nombreLower = nombre.toLowerCase();
+    if (nombreLower.includes('basico')) return baseFeatures.basico;
+    if (nombreLower.includes('pro')) return baseFeatures.pro;
+    if (nombreLower.includes('premium')) return baseFeatures.premium;
+    
+    return baseFeatures.basico;
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -269,8 +258,8 @@ function MembershipsSection() {
 
       tl.fromTo(
         '.membership-card',
-        { 
-          opacity: 0, 
+        {
+          opacity: 0,
           scale: 0.7,
           rotateY: 15,
           z: -100,
@@ -290,6 +279,20 @@ function MembershipsSection() {
     return () => ctx.revert();
   }, []);
 
+  if (isLoading) {
+    return (
+      <section ref={sectionRef} className="py-16 md:py-24 bg-[#111111] px-4 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto relative z-10 text-center">
+          <p className="text-gray-400 text-lg">Cargando membresías...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !membershipTypes || membershipTypes.length === 0) {
+    return null;
+  }
+
   return (
     <section ref={sectionRef} className="py-16 md:py-24 bg-[#111111] px-4 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(59,130,246,0.1),transparent_50%)]" />
@@ -302,31 +305,41 @@ function MembershipsSection() {
           Elige el plan perfecto para ti
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          {memberships.map((membership, index) => (
-            <div
-              key={index}
-              className={`membership-card group bg-[#0a0a0a]/80 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-blue-600 shadow-lg shadow-blue-600/20 relative transition-all duration-500 hover:scale-[1.03] hover:border-blue-600/60 overflow-hidden`}
-            >
-              <div className="absolute inset-0 bg-linear-to-br from-blue-600/5 to-cyan-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 relative z-10">
-                {membership.name}
-              </h3>
-              <div className="text-4xl md:text-5xl font-bold bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-6 relative z-10">
-                ${membership.price}
-                <span className="text-base md:text-lg text-gray-400 font-normal">/mes</span>
+          {membershipTypes.map((membership) => {
+            const features = getFeaturesFromDescription(membership.nombre);
+            const isPopular = membership.nombre.toLowerCase().includes('pro');
+            
+            return (
+              <div
+                key={membership.idTipoMembresia}
+                className={`membership-card group bg-[#0a0a0a]/80 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-blue-600 shadow-lg shadow-blue-600/20 relative transition-all duration-500 hover:scale-[1.03] hover:border-blue-600/60 overflow-hidden ${isPopular ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-[#111111]' : ''}`}
+              >
+                {isPopular && (
+                  <div className="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg z-20">
+                    MÁS POPULAR
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-linear-to-br from-blue-600/5 to-cyan-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 relative z-10">
+                  {membership.nombre}
+                </h3>
+                <div className="text-4xl md:text-5xl font-bold bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-6 relative z-10">
+                  ${membership.precio}
+                  <span className="text-base md:text-lg text-gray-400 font-normal">/{membership.duracionDias === 30 ? 'mes' : membership.duracionDias === 365 ? 'año' : `${membership.duracionDias} días`}</span>
+                </div>
+                <ul className="mb-8 space-y-3 relative z-10">
+                  {features.map((feature, idx) => (
+                    <li key={idx} className="text-gray-300 flex items-center gap-2">
+                      <span className="text-green-500 shrink-0">✓</span> {feature}
+                    </li>
+                  ))}
+                </ul>
+                <button className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-4 rounded-xl transition-all duration-300 relative z-10 group-hover:shadow-lg group-hover:shadow-blue-600/30">
+                  Elegir {membership.nombre}
+                </button>
               </div>
-              <ul className="mb-8 space-y-3 relative z-10">
-                {membership.features.map((feature, idx) => (
-                  <li key={idx} className="text-gray-300 flex items-center gap-2">
-                    <span className="text-green-500 shrink-0">✓</span> {feature}
-                  </li>
-                ))}
-              </ul>
-              <button className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-4 rounded-xl transition-all duration-300 relative z-10 group-hover:shadow-lg group-hover:shadow-blue-600/30">
-                {membership.cta}
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -335,7 +348,8 @@ function MembershipsSection() {
 
 function ClassesSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const { data: clases, isLoading, error } = useClases();
+  const [currentIdx, setCurrentIdx] = useState(0);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -347,37 +361,69 @@ function ClassesSection() {
         },
       });
 
-      cardsRef.current.forEach((card, i) => {
-        if (!card) return;
-        const isEven = i % 2 === 0;
-        tl.fromTo(
-          card,
-          {
-            opacity: 0,
-            x: isEven ? -100 : 100,
-            rotate: isEven ? -10 : 10,
-            scale: 0.8,
-          },
-          {
-            opacity: 1,
-            x: 0,
-            rotate: 0,
-            scale: 1,
-            duration: 1,
-            ease: 'elastic.out(1, 0.6)',
-          },
-          i * 0.15
-        );
-      });
+      tl.fromTo(
+        '.class-card',
+        {
+          opacity: 0,
+          scale: 0.8,
+          y: 50,
+        },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'back.out(1.7)',
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    if (!clases || clases.length === 0) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIdx((prev) => (prev + 1) % (clases.length || 1));
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [clases]);
+
+  const getIconForClass = (nombre: string) => {
+    const nombreLower = nombre.toLowerCase();
+    if (nombreLower.includes('spinning') || nombreLower.includes('ciclo')) return '🚴';
+    if (nombreLower.includes('yoga') || nombreLower.includes('pilates')) return '🧘';
+    if (nombreLower.includes('funcional') || nombreLower.includes('cross')) return '💪';
+    if (nombreLower.includes('boxeo') || nombreLower.includes('kickboxing')) return '🥊';
+    if (nombreLower.includes('zumba') || nombreLower.includes('baile')) return '💃';
+    if (nombreLower.includes('natacion') || nombreLower.includes('acuatico')) return '🏊';
+    if (nombreLower.includes('pesas') || nombreLower.includes('fuerza')) return '🏋️';
+    return '🏃';
+  };
+
+  if (isLoading) {
+    return (
+      <section ref={sectionRef} className="py-16 md:py-24 bg-[#0a0a0a] px-4 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto relative z-10 text-center">
+          <p className="text-gray-400 text-lg">Cargando clases...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !clases || clases.length === 0) {
+    return null;
+  }
+
+  const activeClass = clases[currentIdx];
+
   return (
     <section ref={sectionRef} className="py-16 md:py-24 bg-[#0a0a0a] px-4 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(139,92,246,0.1),transparent_50%)]" />
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-4xl mx-auto relative z-10">
         <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
           Nuestras Clases
         </h2>
@@ -385,27 +431,83 @@ function ClassesSection() {
         <p className="text-gray-400 text-center mb-12 text-lg">
           Encuentra la clase perfecta para tu rutina
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {classes.map((cls, index) => (
+        
+        <div className="relative">
+          <div className="flex justify-center">
             <div
-              key={index}
-              ref={(el) => { cardsRef.current[index] = el; }}
-              className="class-card group bg-[#111111]/80 backdrop-blur-sm p-6 rounded-2xl border border-gray-800 hover:border-purple-600 transition-all duration-500 overflow-hidden"
+              key={activeClass.idClase}
+              className="class-card group bg-[#111111]/80 backdrop-blur-sm p-8 rounded-2xl border border-purple-600/50 shadow-lg shadow-purple-600/20 transition-all duration-500 hover:border-purple-600 hover:shadow-purple-600/40 max-w-md w-full"
             >
-              <div className="h-40 bg-linear-to-br from-blue-600 via-purple-600 to-pink-600 rounded-xl mb-4 flex items-center justify-center relative overflow-hidden group-hover:shadow-lg group-hover:shadow-purple-600/30 transition-shadow duration-500">
+              <div className="h-48 bg-linear-to-br from-blue-600 via-purple-600 to-pink-600 rounded-xl mb-6 flex items-center justify-center relative overflow-hidden group-hover:shadow-lg group-hover:shadow-purple-600/30 transition-shadow duration-500">
                 <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <span className="text-4xl class-icon transform transition-transform duration-300">
-                  {cls.name === 'Spinning' && '🚴'}
-                  {cls.name === 'Yoga' && '🧘'}
-                  {cls.name === 'Funcional' && '💪'}
-                  {cls.name === 'Boxeo' && '🥊'}
+                <span className="text-6xl class-icon transform transition-transform duration-300 group-hover:scale-110">
+                  {getIconForClass(activeClass.nombre)}
                 </span>
               </div>
-              <h3 className="text-xl md:text-2xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors duration-300">{cls.name}</h3>
-              <p className="text-gray-400 text-sm mb-1">{cls.time}</p>
-              <p className="text-gray-500 text-sm">con {cls.instructor}</p>
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 text-center">
+                {activeClass.nombre}
+              </h3>
+              <p className="text-gray-400 text-sm mb-4 text-center">
+                {activeClass.descripcion || 'Clase grupal dinámica y divertida'}
+              </p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-center gap-2 text-gray-300">
+                  <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span className="font-medium">{activeClass.dia}</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-gray-300">
+                  <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="font-medium">{activeClass.horario}</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-gray-300">
+                  <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <span className="font-medium">Cupo: {activeClass.cupo} personas</span>
+                </div>
+              </div>
             </div>
-          ))}
+          </div>
+
+          <div className="flex justify-center gap-2 mt-8">
+            {clases.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIdx(idx)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  idx === currentIdx
+                    ? 'bg-purple-600 w-8'
+                    : 'bg-gray-600 hover:bg-gray-500'
+                }`}
+                aria-label={`Ver clase ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          <div className="flex justify-between mt-6">
+            <button
+              onClick={() => setCurrentIdx((prev) => (prev - 1 + clases.length) % clases.length)}
+              className="p-3 rounded-full bg-purple-600/20 hover:bg-purple-600/40 text-purple-400 transition-all duration-300 hover:scale-110"
+              aria-label="Clase anterior"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setCurrentIdx((prev) => (prev + 1) % clases.length)}
+              className="p-3 rounded-full bg-purple-600/20 hover:bg-purple-600/40 text-purple-400 transition-all duration-300 hover:scale-110"
+              aria-label="Siguiente clase"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </section>

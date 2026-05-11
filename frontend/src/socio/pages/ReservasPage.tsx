@@ -16,6 +16,13 @@ export function SocioReservasPage() {
     return clase?.nombre || 'Clase desconocida';
   };
 
+  const getClaseDay = (claseId: string) => {
+    const clase = clases?.find((c: any) => c.idClase === claseId);
+    if (!clase) return 'Día desconocido';
+    console.log(clase)
+    return clase.dia
+  }
+
   const handleCancel = (reservaId: string, nombre: string) => {
     setSelectedReserva({ id: reservaId, nombre });
     setShowModal(true);
@@ -61,7 +68,9 @@ export function SocioReservasPage() {
     );
   }
 
-  const filteredReservations = reservations?.filter((r: any) => r.idUsuario === userId) || [];
+  const filteredReservations = reservations || [];
+
+  console.log('Reservas del usuario:', filteredReservations);
 
   return (
     <div>
@@ -102,7 +111,7 @@ export function SocioReservasPage() {
               <div className="flex items-center gap-2">
                 <Calendar size={18} />
                 <span className="text-sm">
-                  {new Date(reserva.fechaReserva).toLocaleDateString()}
+                  {getClaseDay(reserva.idClase)}
                 </span>
               </div>
               {reserva.estadoReserva === 'Reservada' && (

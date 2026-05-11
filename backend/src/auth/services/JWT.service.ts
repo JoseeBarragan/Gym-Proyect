@@ -6,7 +6,7 @@ import { Usuario } from "@prisma/client";
 export class JWTService {
     
     generateAccessToken(userData: Usuario): string {
-        return jwt.sign({ email: userData.email, nombre: userData.nombre, apellido: userData.apellido, tipoUsuario: userData.tipoUsuario }, process.env.JWT_SECRET_KEY || "default", { expiresIn: '7d' });
+        return jwt.sign({idUsuario: userData.idUsuario, email: userData.email, nombre: userData.nombre, apellido: userData.apellido, tipoUsuario: userData.tipoUsuario }, process.env.JWT_SECRET_KEY || "default", { expiresIn: '7d' });
     }
 
     verifyAccessToken(token: string): Usuario | null {
