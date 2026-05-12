@@ -29,9 +29,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: List files (Debug)
-        run: ls -R
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -40,6 +37,10 @@ jobs:
       - name: Install dependencies
         working-directory: backend
         run: npm ci
+
+      - name: Generate Prisma Client
+        working-directory: gym/backend
+        run: npx prisma generate
 
       - name: Run Prisma migrations
         working-directory: backend
