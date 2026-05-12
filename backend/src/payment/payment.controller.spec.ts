@@ -3,6 +3,7 @@ import { PaymentController } from './payment.controller';
 describe('PaymentController', () => {
   const createPaymentService = { execute: jest.fn() };
   const handleWebhookService = { execute: jest.fn() };
+  const getPaymentsService = { execute: jest.fn() };
   let controller: PaymentController;
 
   beforeEach(() => {
@@ -10,6 +11,7 @@ describe('PaymentController', () => {
     controller = new PaymentController(
       createPaymentService as never,
       handleWebhookService as never,
+      getPaymentsService as never,
     );
   });
 
@@ -17,11 +19,11 @@ describe('PaymentController', () => {
     createPaymentService.execute.mockResolvedValue('https://checkout.url');
 
     const result = await controller.createPayment({
-      idSocio: 's1',
-      idTipoMembresia: 'm1',
+      email: 'test@email.com',
+      idTipoMembresia: 'tm1',
     });
 
-    expect(createPaymentService.execute).toHaveBeenCalledWith('s1', 'm1');
+    expect(createPaymentService.execute).toHaveBeenCalledWith('test@email.com', 'tm1');
     expect(result).toBe('https://checkout.url');
   });
 

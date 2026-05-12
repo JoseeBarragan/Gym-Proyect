@@ -8,10 +8,11 @@ describe('CreateReservationsService', () => {
   };
   const membershipRepository = { getActiveMembership: jest.fn() };
   const claseRepository = { getById: jest.fn() };
+  const userRepository = { getByEmail: jest.fn() };
   let service: CreateReservationsService;
 
   const dto = {
-    idUsuario: '89',
+    email: 'test@email.com',
     idClase: 'c0',
     fechaReserva: new Date('2026-01-01'),
   };
@@ -22,10 +23,12 @@ describe('CreateReservationsService', () => {
       reservationsRepository as never,
       membershipRepository as never,
       claseRepository as never,
+      userRepository as never
     );
   });
 
   it('should throw if user has no active membership', async () => {
+    userRepository.getByEmail.mockResolvedValue({ idUsuario: 'u1' });
     membershipRepository.getActiveMembership.mockResolvedValue(null);
 
     await expect(service.execute(dto as never)).rejects.toBeInstanceOf(
@@ -34,6 +37,7 @@ describe('CreateReservationsService', () => {
   });
 
   it('should throw if clase does not exist', async () => {
+    userRepository.getByEmail.mockResolvedValue({ idUsuario: 'u1' });
     membershipRepository.getActiveMembership.mockResolvedValue({ idMembresia: 'm1' });
     claseRepository.getById.mockResolvedValue(null);
     reservationsRepository.getReservationForAClase.mockResolvedValue(0);
@@ -42,6 +46,7 @@ describe('CreateReservationsService', () => {
   });
 
   it('should throw if class is fully booked', async () => {
+    userRepository.getByEmail.mockResolvedValue({ idUsuario: 'u1' });
     membershipRepository.getActiveMembership.mockResolvedValue({ idMembresia: 'm1' });
     claseRepository.getById.mockResolvedValue({ cupo: 10 });
     reservationsRepository.getReservationForAClase.mockResolvedValue(10);
@@ -52,6 +57,7 @@ describe('CreateReservationsService', () => {
   });
 
   it('should create reservation when data is valid', async () => {
+    userRepository.getByEmail.mockResolvedValue({ idUsuario: 'u1' });
     membershipRepository.getActiveMembership.mockResolvedValue({ idMembresia: 'm1' });
     claseRepository.getById.mockResolvedValue({ cupo: 10 });
     reservationsRepository.getReservationForAClase.mockResolvedValue(2);
@@ -59,6 +65,6 @@ describe('CreateReservationsService', () => {
 
     await service.execute(dto as never);
 
-    expect(reservationsRepository.create).toHaveBeenCalledWith(dto);
+    expect(reservationsRepository.create).toHaveBeenCalledWith('u1', dto);
   });
 });

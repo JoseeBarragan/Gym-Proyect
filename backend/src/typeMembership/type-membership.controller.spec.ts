@@ -8,7 +8,13 @@ describe('TypeMembershipController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TypeMembershipController],
-      providers: [GetAllTypeMembershipService],
+      providers: [
+        GetAllTypeMembershipService,
+        {
+          provide: 'ITypeMembershipRepository',
+          useValue: { getAll: jest.fn() },
+        },
+      ],
     }).compile();
 
     controller = module.get<TypeMembershipController>(TypeMembershipController);
