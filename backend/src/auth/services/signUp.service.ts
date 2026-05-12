@@ -1,5 +1,5 @@
 import { ConflictException, Inject, Injectable } from "@nestjs/common";
-import { CreateUserDto } from "../../users/dto/user.dto";
+import { CreateUserDto, TipoUsuario } from "../../users/dto/user.dto";
 import type { IUsersRepository } from "../../users/repository/InterfaceRepository";
 import { PasswordService } from "./Password.service";
 
@@ -21,7 +21,8 @@ export class SignUpService {
         
         const newUser = {
             ...user,
-            contrasena: hashedPassword
+            contrasena: hashedPassword,
+            tipoUsuario: "Socio" as TipoUsuario
         }
 
         return await this.userRepository.create(newUser)

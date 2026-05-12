@@ -34,25 +34,57 @@ export function LoginForm({
       <form onSubmit={onSubmit} className="space-y-6">
         {/* Campo Nombre (Solo para Registro) */}
         {!isLogin && (
-          <div className="input-wrapper animate-slide-up delay-100 bg-white/5 rounded-xl border border-white/5 p-1 transition-colors focus-within:bg-white/10">
-            <div className="flex items-center px-4 py-3">
-              <User className="w-5 h-5 text-gray-500 mr-3" />
-              <input
-                type="text"
-                name="name"
-                required
-                placeholder="Nombre Completo"
-                value={formData.name}
-                onChange={onChange}
-                className="w-full bg-transparent border-none outline-none text-white placeholder-gray-500 font-medium"
-              />
+          <>
+            <div className="input-wrapper animate-slide-up delay-100 bg-white/5 rounded-xl border border-white/5 p-1 transition-colors focus-within:bg-white/10">
+              <div className="flex items-center px-4 py-3">
+                <User className="w-5 h-5 text-gray-500 mr-3" />
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  placeholder="Nombre"
+                  value={formData.name}
+                  onChange={onChange}
+                  className="w-full bg-transparent border-none outline-none text-white placeholder-gray-500 font-medium"
+                />
+              </div>
             </div>
-          </div>
+
+            <div className="input-wrapper animate-slide-up delay-200 bg-white/5 rounded-xl border border-white/5 p-1 transition-colors focus-within:bg-white/10">
+              <div className="flex items-center px-4 py-3">
+                <User className="w-5 h-5 text-gray-500 mr-3" />
+                <input
+                  type="text"
+                  name="apellido"
+                  required
+                  placeholder="Apellido"
+                  value={formData.apellido}
+                  onChange={onChange}
+                  className="w-full bg-transparent border-none outline-none text-white placeholder-gray-500 font-medium"
+                />
+              </div>
+            </div>
+
+            <div className="input-wrapper animate-slide-up delay-300 bg-white/5 rounded-xl border border-white/5 p-1 transition-colors focus-within:bg-white/10">
+              <div className="flex items-center px-4 py-3">
+                <Mail className="w-5 h-5 text-gray-500 mr-3" />
+                <input
+                  type="text"
+                  name="telefono"
+                  required
+                  placeholder="Teléfono"
+                  value={formData.telefono}
+                  onChange={onChange}
+                  className="w-full bg-transparent border-none outline-none text-white placeholder-gray-500 font-medium"
+                />
+              </div>
+            </div>
+          </>
         )}
 
         {/* Campo Correo */}
         <div
-          className={`input-wrapper animate-slide-up ${isLogin ? 'delay-100' : 'delay-200'} bg-white/5 rounded-xl border border-white/5 p-1 transition-colors focus-within:bg-white/10`}
+          className={`input-wrapper animate-slide-up ${isLogin ? (formData.name ? 'delay-200' : 'delay-100') : 'delay-100'} bg-white/5 rounded-xl border border-white/5 p-1 transition-colors focus-within:bg-white/10`}
         >
           <div className="flex items-center px-4 py-3">
             <Mail className="w-5 h-5 text-gray-500 mr-3" />
@@ -70,7 +102,7 @@ export function LoginForm({
 
         {/* Campo Contraseña */}
         <div
-          className={`input-wrapper animate-slide-up ${isLogin ? 'delay-200' : 'delay-300'} bg-white/5 rounded-xl border border-white/5 p-1 transition-colors focus-within:bg-white/10`}
+          className={`input-wrapper animate-slide-up ${isLogin ? 'delay-200' : 'delay-400'} bg-white/5 rounded-xl border border-white/5 p-1 transition-colors focus-within:bg-white/10`}
         >
           <div className="flex items-center px-4 py-3">
             <Lock className="w-5 h-5 text-gray-500 mr-3" />
@@ -102,7 +134,7 @@ export function LoginForm({
         <button
           type="submit"
           disabled={isLoading}
-          className={`w-full group relative overflow-hidden rounded-xl p-0.5 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] animate-slide-up delay-400`}
+          className={`w-full group relative overflow-hidden rounded-xl p-0.5 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] animate-slide-up ${isLogin ? 'delay-300' : 'delay-500'}`}
         >
           <span className="absolute inset-0 bg-linear-to-r from-emerald-500 via-cyan-500 to-emerald-500 bg-size-[200%_auto] animate-[spinCustom_3s_linear_infinite] opacity-70 group-hover:opacity-100 transition-opacity" />
           <div className="relative bg-neutral-900 rounded-[10px] px-6 py-4 flex items-center justify-center gap-2 transition-colors group-hover:bg-neutral-900/80">

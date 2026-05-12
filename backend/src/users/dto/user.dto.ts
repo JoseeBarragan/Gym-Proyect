@@ -34,6 +34,7 @@ export class CreateUserDto {
     telefono!: string;
 
     @ApiProperty({ enum: TipoUsuario, example: TipoUsuario.SOCIO, description: "Rol del usuario" })
+    @IsOptional()
     @IsNotEmpty()
     @IsEnum(TipoUsuario)
     tipoUsuario!: TipoUsuario;

@@ -8,10 +8,10 @@ RUN npm install
 
 COPY . .
 
-RUN DATABASE_URL="postgresql://postgres:name@localhost:5432/dummy" npx prisma generate
+RUN npx prisma generate
 
 RUN npm run build
 
 EXPOSE 3000
 
-CMD ["node", "./dist/main.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]

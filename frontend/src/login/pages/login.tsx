@@ -20,6 +20,8 @@ export default function LoginPage() {
     name: '',
     email: '',
     password: '',
+    apellido: '',
+    telefono: '',
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -27,13 +29,57 @@ export default function LoginPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    void (async () => {
-      setIsLoading(true);
+const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  void (async () => {
+    setIsLoading(true);
 
-      try {
-        const normalizedEmail = formData.email.trim();
+    try {
+      const normalizedEmail = formData.email.trim();
+      console.log("normalizedEmail", normalizedEmail)
+      if (!isLogin) {
+        console.log("registrando")
+        const res = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}/auth/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: normalizedEmail,
+            contrasena: formData.password,
+            nombre: formData.name,
+            apellido: formData.apellido,
+            telefono: formData.telefono,
+          }),
+          credentials: 'include',
+        });
+
+        if (!res.ok) {
+          const error = await res.json().catch(() => ({ message: 'Error al registrarse' }));
+          throw new Error(error.message || 'Error al registrarse');
+        }
+
+        console.log("respuesta", res)
+
+        const loginRes = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: normalizedEmail, contrasena: formData.password }),
+          credentials: 'include',
+        });
+
+        if (!loginRes.ok) {
+          throw new Error('Credenciales inválidas');
+        }
+
+        await login({ email: normalizedEmail, password: formData.password });
+
+        setIsSuccess(true);
+
+        setTimeout(() => {
+          setIsSuccess(false);
+          navigate('/home');
+        }, 800);
+      } else {
+        console.log("logueando")
         const user = await login({ email: normalizedEmail, password: formData.password });
 
         setIsSuccess(true);
@@ -42,7 +88,7 @@ export default function LoginPage() {
           setIsSuccess(false);
           if (user.tipoUsuario === 'Administrador') {
             navigate('/admin');
-          } 
+          }
           else if (user.tipoUsuario === 'Instructor') {
             navigate('/instructor');
           }
@@ -53,18 +99,19 @@ export default function LoginPage() {
             navigate('/login');
           }
         }, 800);
-      } catch {
-        setIsSuccess(false);
-      } finally {
-        setIsLoading(false);
       }
-    })();
-  };
+    } catch {
+      setIsSuccess(false);
+    } finally {
+      setIsLoading(false);
+    }
+  })();
+};
 
-  const toggleMode = () => {
-    setIsLogin((prev) => !prev);
-    setFormData({ name: '', email: '', password: '' });
-  };
+const toggleMode = () => {
+  setIsLogin((prev) => !prev);
+  setFormData({ name: '', email: '', password: '', apellido: '', telefono: '' });
+};
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center overflow-hidden relative font-sans">
