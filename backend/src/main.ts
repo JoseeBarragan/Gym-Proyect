@@ -14,7 +14,7 @@ async function bootstrap() {
   
   app.useGlobalPipes(new ValidationPipe({whitelist: true, transform: true}))
   
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+   
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
