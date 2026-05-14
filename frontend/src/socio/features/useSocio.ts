@@ -88,10 +88,9 @@ export function useCreateReservation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reservas'] });
       queryClient.invalidateQueries({ queryKey: ['clases'] });
-      toast.success('Reserva creada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al crear reserva: ${error.message}`);
+      toast.error(error.message || 'Error al crear reserva');
     },
   });
 }
@@ -103,10 +102,9 @@ export function useCancelReservation() {
     mutationFn: (id: string) => cancelReservation(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reservas'] });
-      toast.success('Reserva cancelada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al cancelar reserva: ${error.message}`);
+      toast.error(error.message || 'Error al cancelar reserva');
     },
   });
 }
@@ -141,10 +139,9 @@ export function useAssignMembership() {
     mutationFn: (data: AssignMembershipBody) => assignMembership(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['membershipTypes'] });
-      toast.success('Membresía asignada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al asignar membresía: ${error.message}`);
+      toast.error(error.message || 'Error al asignar membresía');
     },
   });
 }
@@ -159,7 +156,7 @@ export function useCreatePayment() {
       }
     },
     onError: (error: Error) => {
-      toast.error(`Error al crear pago: ${error.message}`);
+      toast.error(error.message || 'Error al crear pago');
     },
   });
 }

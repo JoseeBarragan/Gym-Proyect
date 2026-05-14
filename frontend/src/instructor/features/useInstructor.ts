@@ -93,9 +93,9 @@ export function useClassReservations(claseId: string) {
 
 export function useUpdateReservationAttendance() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: async ({ reservationId, asistio }: { 
+    mutationFn: async ({ reservationId, asistio }: {
       reservationId: string;
       asistio: boolean;
     }) => {
@@ -109,10 +109,9 @@ export function useUpdateReservationAttendance() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['class-reservations'] });
-      toast.success('Asistencia actualizada correctamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al actualizar asistencia: ${error.message || 'Ocurrió un error'}`);
+      toast.error(error.message || 'Error al actualizar asistencia');
     },
   });
 }

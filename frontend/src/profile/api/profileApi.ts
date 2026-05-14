@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export interface ProfileData {
@@ -17,8 +19,18 @@ export interface UpdateProfilePayload {
   contrasena?: string;
 }
 
+function getProfileErrorMessage(status: number, isUpdate: boolean): string {
+  if (status === 401) return 'No autorizado. Inicia sesión nuevamente.';
+  if (status === 403) return isUpdate ? 'No tienes permisos para actualizar este perfil.' : 'No tienes permisos para ver este perfil.';
+  if (status === 404) return 'Perfil no encontrado.';
+  if (status === 409) return 'El email ya está en uso.';
+  if (status === 500) return 'Error del servidor. Intenta más tarde.';
+  return isUpdate ? 'Error al actualizar el perfil. Intenta nuevamente.' : 'Error al obtener el perfil. Intenta nuevamente.';
+}
+
 async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
   const token = localStorage.getItem('accessToken');
+  const isUpdate = options.method === 'PATCH' || options.method === 'POST';
 
   const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');
@@ -33,11 +45,20 @@ async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Error en la peticion' }));
-    throw new Error(error.message || 'Error en la peticion a la API');
+    const errorData = await response.json().catch(() => ({}));
+    const message = errorData.message || getProfileErrorMessage(response.status, isUpdate);
+    toast.error(message);
+    throw new Error(message);
   }
 
-  return response.json();
+  const data = await response.json();
+  
+  // Show success toast for non-GET requests
+  if (isUpdate) {
+    toast.success('Perfil actualizado exitosamente');
+  }
+  
+  return data;
 }
 
 export async function getProfile(email: string): Promise<ProfileData> {

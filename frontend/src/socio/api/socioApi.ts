@@ -3,11 +3,42 @@
  * Based on backend source code analysis
  */
 
+import { toast } from 'react-toastify';
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+function getErrorMessage(endpoint: string, method: string, status: number): string {
+  if (status === 401) return 'No autorizado. Inicia sesión nuevamente.';
+  if (status === 403) return 'No tienes permisos para realizar esta acción.';
+  if (status === 404) return 'Recurso no encontrado.';
+  if (status === 409) return 'Conflicto. Ya existe una reserva para esta clase.';
+  if (status === 500) return 'Error del servidor. Intenta más tarde.';
+  
+  if (endpoint === '/Clase') return 'Error al obtener las clases.';
+  if (endpoint === '/reservations' && method === 'POST') return 'Error al crear la reserva.';
+  if (endpoint.startsWith('/reservations/') && method === 'DELETE') return 'Error al cancelar la reserva.';
+  if (endpoint === '/typeMembership') return 'Error al obtener las membresías.';
+  if (endpoint === '/membership/asign') return 'Error al asignar la membresía.';
+  if (endpoint === '/payment/createPayment') return 'Error al procesar el pago.';
+  
+  return 'Error en la petición a la API';
+}
+
+function getSuccessMessage(endpoint: string, method: string): string {
+  if (endpoint === '/Clase') return 'Clases obtenidas exitosamente';
+  if (endpoint === '/reservations' && method === 'POST') return 'Reserva creada exitosamente';
+  if (endpoint.startsWith('/reservations/') && method === 'DELETE') return 'Reserva cancelada exitosamente';
+  if (endpoint === '/typeMembership') return 'Membresías obtenidas exitosamente';
+  if (endpoint === '/membership/asign') return 'Membresía asignada exitosamente';
+  if (endpoint === '/payment/createPayment') return 'Pago procesado exitosamente';
+  
+  return 'Operación exitosa';
+}
 
 // Helper function for authenticated requests
 export async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
   const token = localStorage.getItem('accessToken');
+  const method = options.method || 'GET';
 
   const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');
@@ -22,11 +53,20 @@ export async function fetchWithAuth(endpoint: string, options: RequestInit = {})
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Error en la petición' }));
-    throw new Error(error.message || 'Error en la petición a la API');
+    const errorData = await response.json().catch(() => ({}));
+    const message = errorData.message || getErrorMessage(endpoint, method, response.status);
+    toast.error(message);
+    throw new Error(message);
   }
 
-  return response.json();
+  const data = await response.json();
+  
+  // Show success toast for non-GET requests
+  if (method !== 'GET') {
+    toast.success(getSuccessMessage(endpoint, method));
+  }
+  
+  return data;
 }
 
 // ==================== CLASES ====================

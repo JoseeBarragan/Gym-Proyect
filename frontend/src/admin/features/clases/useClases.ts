@@ -46,10 +46,9 @@ export function useClases() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clases'] });
-      toast.success('Clase creada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al crear clase: ${error.message || 'Ocurrió un error inesperado'}`);
+      toast.error(error.message || 'Error al crear clase');
     },
   });
 
@@ -64,10 +63,9 @@ export function useClases() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clases'] });
-      toast.success('Clase actualizada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al actualizar clase: ${error.message || 'Ocurrió un error inesperado'}`);
+      toast.error(error.message || 'Error al actualizar clase');
     },
   });
 
@@ -80,10 +78,9 @@ export function useClases() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clases'] });
-      toast.success('Estado de clase actualizado exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al actualizar estado: ${error.message || 'Ocurrió un error inesperado'}`);
+      toast.error(error.message || 'Error al actualizar estado');
     },
   });
 
@@ -95,10 +92,9 @@ export function useClases() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clases'] });
-      toast.success('Clase eliminada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al eliminar clase: ${error.message || 'Ocurrió un error inesperado'}`);
+      toast.error(error.message || 'Error al eliminar clase');
     },
   });
 

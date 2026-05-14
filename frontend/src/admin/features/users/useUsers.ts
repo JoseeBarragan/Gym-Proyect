@@ -39,10 +39,9 @@ export function useCreateUser() {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['admin-users'] });
-      toast.success('Usuario creado exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al crear usuario: ${error.message || 'Ocurrió un error inesperado'}`);
+      toast.error(error.message || 'Error al crear usuario');
     },
   });
 }
@@ -59,10 +58,9 @@ export function useUpdateUser() {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['admin-users'] });
-      toast.success('Usuario actualizado exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al actualizar usuario: ${error.message || 'Ocurrió un error inesperado'}`);
+      toast.error(error.message || 'Error al actualizar usuario');
     },
   });
 }
@@ -78,10 +76,9 @@ export function useDeleteUser() {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['admin-users'] });
-      toast.success('Usuario eliminado exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Error al eliminar usuario: ${error.message || 'Ocurrió un error inesperado'}`);
+      toast.error(error.message || 'Error al eliminar usuario');
     },
   });
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { LoginBackground } from '../components/LoginBackground';
 import { LoginBrandPanel } from '../components/LoginBrandPanel';
 import { LoginForm } from '../components/LoginForm';
@@ -29,84 +30,98 @@ export default function LoginPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  void (async () => {
-    setIsLoading(true);
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    void (async () => {
+      setIsLoading(true);
 
-    try {
-      const normalizedEmail = formData.email.trim();
-      console.log("normalizedEmail", normalizedEmail)
-      if (!isLogin) {
-        console.log("registrando")
-        const res = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}/auth/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: normalizedEmail,
-            contrasena: formData.password,
-            nombre: formData.name,
-            apellido: formData.apellido,
-            telefono: formData.telefono,
-          }),
-          credentials: 'include',
-        });
+      try {
+        const normalizedEmail = formData.email.trim();
+        console.log("normalizedEmail", normalizedEmail)
+        if (!isLogin) {
+          console.log("registrando")
+          const res = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}/auth/signup`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: normalizedEmail,
+              contrasena: formData.password,
+              nombre: formData.name,
+              apellido: formData.apellido,
+              telefono: formData.telefono,
+            }),
+            credentials: 'include',
+          });
 
-        if (!res.ok) {
-          const error = await res.json().catch(() => ({ message: 'Error al registrarse' }));
-          throw new Error(error.message || 'Error al registrarse');
-        }
-
-        console.log("respuesta", res)
-
-        const loginRes = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: normalizedEmail, contrasena: formData.password }),
-          credentials: 'include',
-        });
-
-        if (!loginRes.ok) {
-          throw new Error('Credenciales inválidas');
-        }
-
-        await login({ email: normalizedEmail, password: formData.password });
-
-        setIsSuccess(true);
-
-        setTimeout(() => {
-          setIsSuccess(false);
-          navigate('/home');
-        }, 800);
-      } else {
-        console.log("logueando")
-        const user = await login({ email: normalizedEmail, password: formData.password });
-
-        setIsSuccess(true);
-
-        setTimeout(() => {
-          setIsSuccess(false);
-          if (user.tipoUsuario === 'Administrador') {
-            navigate('/admin');
+          if (!res.ok) {
+            const error = await res.json().catch(() => ({}));
+            const message = error.message 
+              || (res.status === 409 ? 'Ya existe un usuario con ese email' 
+              : res.status === 400 ? 'Datos inválidos. Verifica la información.'
+              : 'Error al registrarse');
+            toast.error(message);
+            throw new Error(message);
           }
-          else if (user.tipoUsuario === 'Instructor') {
-            navigate('/instructor');
+
+          console.log("respuesta", res)
+
+          const loginRes = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: normalizedEmail, contrasena: formData.password }),
+            credentials: 'include',
+          });
+
+          if (!loginRes.ok) {
+            const error = await loginRes.json().catch(() => ({}));
+            const message = error.message 
+              || (loginRes.status === 401 ? 'Credenciales inválidas'
+              : loginRes.status === 403 ? 'Usuario no autorizado'
+              : 'Error al iniciar sesión');
+            toast.error(message);
+            throw new Error(message);
           }
-          else if (user.tipoUsuario === 'Socio') {
+
+          await login({ email: normalizedEmail, password: formData.password });
+
+          toast.success('Registro exitoso. ¡Bienvenido!');
+          setIsSuccess(true);
+
+          setTimeout(() => {
+            setIsSuccess(false);
             navigate('/home');
-          }
-          else {
-            navigate('/login');
-          }
-        }, 800);
+          }, 800);
+        } else {
+          console.log("logueando")
+          const user = await login({ email: normalizedEmail, password: formData.password });
+
+          toast.success('Inicio de sesión exitoso');
+          setIsSuccess(true);
+
+          setTimeout(() => {
+            setIsSuccess(false);
+            if (user.tipoUsuario === 'Administrador') {
+              navigate('/admin');
+            }
+            else if (user.tipoUsuario === 'Instructor') {
+              navigate('/instructor');
+            }
+            else if (user.tipoUsuario === 'Socio') {
+              navigate('/home');
+            }
+            else {
+              navigate('/login');
+            }
+          }, 800);
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        setIsSuccess(false);
+      } finally {
+        setIsLoading(false);
       }
-    } catch {
-      setIsSuccess(false);
-    } finally {
-      setIsLoading(false);
-    }
-  })();
-};
+    })();
+  };
 
 const toggleMode = () => {
   setIsLogin((prev) => !prev);
