@@ -6,6 +6,12 @@ A comprehensive monorepo gym management application with role-based access contr
 
 ---
 
+## Objective
+
+The primary objective of this project was to develop a scalable gym management backend while gaining practical experience with NestJS and modern development workflows. The learning process involved containerizing the application with Docker and implementing CI/CD pipelines via GitHub Actions for automated quality assurance. Additionally, it provided a hands-on opportunity to integrate Stripe for payment processing and utilize Swagger/OpenAPI for comprehensive API documentation.
+
+---
+
 ## Overview
 
 This application provides a complete gym management solution with separate interfaces for administrators, instructors, and members (socios). It handles user management, class scheduling, reservation systems, membership tracking, and payment processing through Stripe.

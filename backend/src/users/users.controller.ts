@@ -122,8 +122,8 @@ export class UsersController {
 
     @Roles("Administrador")
     @Post("instructor")
-    @ApiOperation({ summary: 'Crear instructor', description: 'Crea un usuario de tipo Instructor. El tipo enviado se fuerza a Instructor en el servicio.' })
-    @ApiBody({ type: CreateUserDto })
+    @ApiOperation({ summary: 'Crear instructor', description: 'Crea un usuario de tipo Instructor. El campo tipoUsuario se fuerza a Instructor internamente.' })
+    @ApiBody({ type: CreateInstructorDto })
     @ApiCreatedResponse({
         description: 'Instructor creado correctamente',
         schema: {

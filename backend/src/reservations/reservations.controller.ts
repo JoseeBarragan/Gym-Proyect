@@ -44,10 +44,10 @@ export class ReservationsController {
 
   @Delete("/:id")
   @Roles("Socio")
-  @ApiOperation({ summary: 'Cancelar reserva', description: 'Cancela una reserva cambiando estado a Cancelada.' })
+  @ApiOperation({ summary: 'Cancelar reserva', description: 'Elimina físicamente una reserva del sistema.' })
   @ApiParam({ name: 'id', example: '4a307c9b-383a-42fc-b772-5c8a55c3d731' })
   @ApiOkResponse({
-    description: 'Reserva cancelada',
+    description: 'Reserva eliminada',
     schema: {
       example: {
         message: 'Reserva eliminada exitosamente'
@@ -63,7 +63,7 @@ export class ReservationsController {
 
   @Get("/:email")
   @Roles("Socio")
-  @ApiOperation({ summary: 'Listar reservas por socio', description: 'Obtiene todas las reservas de un socio.' })
+  @ApiOperation({ summary: 'Listar reservas por socio', description: 'Obtiene todas las reservas asociadas al email de un socio.' })
   @ApiParam({ name: 'email', example: 'john.doe@example.com' })
   @ApiOkResponse({
     description: 'Reservas del socio',
@@ -73,8 +73,8 @@ export class ReservationsController {
           idReserva: '4a307c9b-383a-42fc-b772-5c8a55c3d731',
           idClase: '3b4b340d-6cb4-42eb-a35e-bec0ca2516f5',
           idSocio: 'f4a42766-c4e1-4c9b-a290-9b8562a3a3f2',
-          fechaReserva: '2026-05-01T00:00:00.000Z',
-          estadoReserva: 'Reservada'
+          estadoReserva: 'Reservada',
+          asistencia: null
         }
       ]
     }
@@ -87,7 +87,7 @@ export class ReservationsController {
 
   @Get("clase/:idClase")
   @Roles("Administrador", "Instructor")
-  @ApiOperation({ summary: 'Listar reservas por clase', description: 'Obtiene reservas activas (Reservada) para una clase.' })
+  @ApiOperation({ summary: 'Listar reservas por clase', description: 'Obtiene reservas activas para una clase específica.' })
   @ApiParam({ name: 'idClase', example: '3b4b340d-6cb4-42eb-a35e-bec0ca2516f5' })
   @ApiOkResponse({
     description: 'Reservas de la clase',
@@ -97,8 +97,8 @@ export class ReservationsController {
           idReserva: '4a307c9b-383a-42fc-b772-5c8a55c3d731',
           idClase: '3b4b340d-6cb4-42eb-a35e-bec0ca2516f5',
           idSocio: 'f4a42766-c4e1-4c9b-a290-9b8562a3a3f2',
-          fechaReserva: '2026-05-01T00:00:00.000Z',
-          estadoReserva: 'Reservada'
+          estadoReserva: 'Reservada',
+          asistencia: true
         }
       ]
     }
@@ -111,7 +111,7 @@ export class ReservationsController {
 
   @Patch("/:id/asistencia")
   @Roles("Administrador", "Instructor")
-  @ApiOperation({ summary: 'Actualizar asistencia', description: 'Actuala el estado de asistencia de una reserva.' })
+  @ApiOperation({ summary: 'Actualizar asistencia', description: 'Actualiza el estado de asistencia de una reserva.' })
   @ApiParam({ name: 'id', example: '4a307c9b-383a-42fc-b772-5c8a55c3d731' })
   @ApiBody({ schema: { example: { asistencia: true } } })
   @ApiOkResponse({
@@ -121,7 +121,6 @@ export class ReservationsController {
         idReserva: '4a307c9b-383a-42fc-b772-5c8a55c3d731',
         idClase: '3b4b340d-6cb4-42eb-a35e-bec0ca2516f5',
         idSocio: 'f4a42766-c4e1-4c9b-a290-9b8562a3a3f2',
-        fechaReserva: '2026-05-01T00:00:00.000Z',
         estadoReserva: 'Reservada',
         asistencia: true
       }

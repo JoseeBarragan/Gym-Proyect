@@ -76,7 +76,7 @@ export class AuthController {
 
   @Public()
   @Post("signup")
-  @ApiOperation({ summary: 'Registrar usuario', description: 'Crea un nuevo usuario en el sistema.' })
+  @ApiOperation({ summary: 'Registrar usuario', description: 'Crea un nuevo usuario con el rol fijo de Socio. El email debe ser único.' })
   @ApiBody({ type: CreateUserDto })
   @ApiCreatedResponse({
     description: 'Usuario creado correctamente',

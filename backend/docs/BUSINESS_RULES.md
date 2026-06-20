@@ -54,28 +54,29 @@ Incluye reglas implementadas, parciales y pendientes.
 ## Clase
 ### Implementadas
 - Solo `Administrador` crea, actualiza y elimina clases.
-- Solo `Administrador` e `Instructor` listan clases (`GET /`).
+- El listado de clases (`GET /`) es publico (decorador `Public`).
 - `cupo` y `duracionMinutos` deben ser >= 1 por validacion DTO.
 - `idInstructor` debe pertenecer a un usuario de tipo `Instructor` para crear clase.
+- Existe el campo `activa` en la base de datos (default true).
 
 ### Pendientes o no implementadas
 - No hay constraint para "un instructor solo puede tener una clase por dia y horario".
-- No existe campo `attended` en `Reserva`.
-- No existe regla de "solo instructor asignado marca attended" por falta de funcionalidad.
+- No se valida `clase.activa` al reservar.
 
 ## Reserva
 ### Implementadas
 - Solo `Socio` puede crear/cancelar/listar sus reservas.
 - Solo `Administrador` o `Instructor` pueden listar reservas por clase.
 - Un socio debe tener membresia activa para reservar.
-- No se permite superar cupo: si reservas activas para esa clase/fecha >= cupo, se rechaza.
-- Al "cancelar" se cambia estado a `Cancelada` (cancelacion logica).
-- Restriccion unica en BD: `@@unique([idSocio, idClase, fechaReserva])`.
+- No se permite superar cupo: si reservas activas para esa clase >= cupo, se rechaza.
+- Al "cancelar" (vía `DELETE /reservations/:id`) se realiza una eliminacion fisica (Hard Delete).
+- Existe el campo `asistencia` (Boolean) que puede ser editado por `Administrador` o `Instructor` via `PATCH /reservations/:id/asistencia`.
+- Restriccion unica en BD: `@@unique([idSocio, idClase])`.
 
 ### Pendientes o no implementadas
-- No se valida `clase.activa` al reservar.
-- No se valida "no cancelar si la clase ya ocurrio".
-- No existe estado `CONFIRMED`; el enum actual es `Reservada | Cancelada`.
+- No existe el campo `fechaReserva` en el modelo de base de datos.
+- No se valida "no cancelar si la clase ya ocurrio" (la cancelacion es eliminacion).
+- No existe estado `CONFIRMED`; el enum actual es `Reservada | Cancelada` (aunque `Cancelada` no se utiliza por el hard delete).
 - No se valida choque de horario para un mismo socio en clases distintas del mismo dia/horario.
 
 ## Observaciones tecnicas relevantes
