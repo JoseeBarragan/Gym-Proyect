@@ -11,9 +11,10 @@ import { ConfigModule } from '@nestjs/config';
 import { ClaseModule } from './clase/clase.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { TypeMembershipModule } from './typeMembership/type-membership.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, MembershipModule, PaymentModule, ClaseModule, ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }), ReservationsModule, TypeMembershipModule],
+  imports: [AuthModule, RedisModule, UsersModule, MembershipModule, PaymentModule, ClaseModule, ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }), ReservationsModule, TypeMembershipModule],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },

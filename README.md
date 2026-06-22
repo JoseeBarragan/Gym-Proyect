@@ -88,6 +88,35 @@ src/
 
 ---
 
+## Redis & Caching
+
+Even though the backend already performed well (with response times under 20ms), Redis was integrated into the project for learning purposes to practice caching patterns in a NestJS environment.
+
+### Cache Strategy
+
+We implemented the **Cache-Aside pattern**:
+1. The application first checks the Redis cache for requested data.
+2. If the data is present (**Cache Hit**), it is returned immediately.
+3. If the data is missing (**Cache Miss**), the application fetches it from the PostgreSQL database, stores it in Redis for future requests, and then returns it.
+
+### Implementation Details
+
+- **Global Redis Module**: The `RedisService` is wrapped in a `@Global()` NestJS module. This allows it to be used across any module in the application without the need for redundant imports.
+- **Official Client**: Uses the official `redis` npm package.
+- **Key Naming Convention**: Keys follow the pattern `cache:<resource>` (e.g., `cache:clases`, `cache:type-memberships`).
+- **TTL (Time to Live)**: Cached entries are set with a TTL of **5 minutes** (300 seconds).
+
+### Cached Endpoints & Invalidation
+
+| Endpoint | Cache Key | Invalidation Trigger |
+|----------|-----------|-----------------------|
+| `GET /typeMembership` | `cache:type-memberships` | N/A (Static data) |
+| `GET /Clase` | `cache:clases` | `POST`, `PATCH`, `DELETE` on `/Clase` |
+
+To ensure data consistency, the cache for classes is explicitly invalidated whenever a new class is created, or an existing one is updated or deleted.
+
+---
+
 ## Tech Stack
 
 ### Backend
@@ -99,6 +128,7 @@ src/
 | NestJS | 11.0.1 | Backend framework |
 | Prisma | 6.19.3 | ORM and database toolkit |
 | PostgreSQL | - | Primary database |
+| Redis | 6.0.0 | Caching database |
 | bcrypt | 6.0.0 | Password hashing |
 | jsonwebtoken | 9.0.3 | JWT authentication |
 | class-validator | 0.15.1 | DTO validation |

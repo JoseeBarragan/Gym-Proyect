@@ -12,7 +12,7 @@ import { PrismaService } from '../prisma.service';
       provide: 'ITypeMembershipRepository',
       useClass: TypeMembershipRepository,
     },
-    PrismaService
+    PrismaService,
   ],
 })
 export class TypeMembershipModule {}

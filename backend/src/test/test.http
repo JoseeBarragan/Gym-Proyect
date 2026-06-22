@@ -2,7 +2,7 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "admin@gym.com",
+    "email": "barraganseba@gmail.com",
     "contrasena": "12345678"
 }
 ###
@@ -58,4 +58,4 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/Clase
+GET http://localhost:3000/typeMembership
